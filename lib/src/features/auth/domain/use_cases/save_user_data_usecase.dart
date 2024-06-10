@@ -9,12 +9,14 @@ class SaveUserDataUseCase {
   Future<void> execute({
     required String email,
     required String id,
-    required String department,
+    required String? department,
+    required String? userType,
   }) async {
     await secureStorageRepository.saveUserData(
       email: email,
       id: id,
       department: department,
+      userType:userType,
     );
   }
 }

@@ -12,10 +12,18 @@ class SecureStorageRepositoryImpl implements SecureStorageRepository {
   Future<void> saveUserData({
     required String email,
     required String id,
-    required String department,
+    required String? department,
+    required String? userType,
   }) async {
+    String batchName='';
+    if(userType == "Student")
+      {
+        String emailKey = email.split("@")[0];
+        String batchId = emailKey.substring(4,6);
+         batchName = "20$batchId-20${int.parse(batchId) + 4}";
+      }
     AuthUserModel user =
-        AuthUserModel(id: id, email: email, department: department);
+        AuthUserModel(id: id, email: email, department: department,batchId:batchName);
     String userDataJson =
         jsonEncode(user.toJson()); // Convert AuthUserModel to JSON string
     await _secureStorage.write(key: 'userData', value: userDataJson);

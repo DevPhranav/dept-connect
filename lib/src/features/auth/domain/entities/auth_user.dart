@@ -5,7 +5,8 @@ import 'package:equatable/equatable.dart';
 class AuthUser extends Equatable {
   final String id;
   final String email;
-  final String department;
+  final String? department;
+  final String? batchId;
   // For example, a high-level rule for a User entity might be
   // that a user age cannot be lower than 18.
   // final int age;
@@ -14,12 +15,13 @@ class AuthUser extends Equatable {
     required this.id,
     required this.email,
     required this.department,
+    this.batchId,
   });
 
 
 
   @override
-  List<Object?> get props => [id,email,department];
+  List<Object?> get props => [id,email,department,batchId];
 
   // DO NOT ADD THIS CONSTRUCTOR:
   // It's not the role of the entity to know how to serialize

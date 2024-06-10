@@ -1,3 +1,4 @@
+import 'package:connectivity_bloc/connectivity_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,6 +88,7 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => ConnectivityBloc()),
           BlocProvider<SignInBloc>(
             create: (context) => SignInBloc(
               signInUseCase: SignInUseCase(authRepository: authRepository),
@@ -101,6 +103,7 @@ class App extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Clean Architecture',
           theme: ThemeData.light(useMaterial3: true),
           initialRoute: initialRoute,

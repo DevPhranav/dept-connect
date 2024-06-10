@@ -5,7 +5,7 @@ import '../../../../../static/hod_drawer.dart';
 class HomeScreen extends StatelessWidget {
   final AuthUserModel? user;
 
-  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  const HomeScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +23,27 @@ class HomeScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Email: ${user?.email ?? 'N/A'}'),
-            const SizedBox(height: 10),
-            Text('ID: ${user?.id ?? 'N/A'}'),
-            const SizedBox(height: 10),
-            Text('Department: ${user?.department ?? 'N/A'}'),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Email: ${user?.email ?? 'N/A'}'),
+                const SizedBox(height: 10),
+                Text('ID: ${user?.id ?? 'N/A'}'),
+                const SizedBox(height: 10),
+                Text('Department: ${user?.department ?? 'N/A'}'),
+                const SizedBox(height: 10,),
+                Text('BatchID : ${user?.batchId}'),
+              ],
+            ),
+          ),
+        ],
       ),
       drawer: const HodDrawer(userName: "hello"),
+
     );
   }
 }

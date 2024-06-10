@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:connectivity_bloc/connectivity_bloc.dart';
 import '../../../../../static/loading_indicator.dart';
 import '../../../../../static/user_button.dart';
 import '../blocs/sign_in/sign_in_bloc.dart';
@@ -8,7 +9,7 @@ import '../blocs/sign_in/sign_in_state.dart';
 import 'home_screen.dart';
 
 class SignInScreen extends StatelessWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class SignInScreen extends StatelessWidget {
 }
 
 class SignInView extends StatefulWidget {
-  const SignInView({Key? key}) : super(key: key);
+  const SignInView({super.key});
 
   @override
   State<SignInView> createState() => _SignInViewState();
@@ -52,16 +53,10 @@ class _SignInViewState extends State<SignInView> {
           BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state is SignInFailureState) {
-                if(state.errorMessage == "Exception: [firebase_auth/network-request-failed] A network error (such as timeout, interrupted connection or unreachable host) has occurred."){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Network connection error. Please check your internet connection and try again.")),
-                  );
-                }
-                else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.errorMessage)),
                   );
-                }
+
               } else if (state is SignInSuccessState) {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => HomeScreen(user: state.user),
@@ -172,6 +167,7 @@ class _SignInViewState extends State<SignInView> {
               );
             },
           ),
+          // Connectivity Status
         ],
       ),
     );

@@ -6,23 +6,40 @@ import '../../domain/entities/auth_user.dart';
 class AuthUserModel extends Equatable {
   final String id;
   final String email;
-  final String department;
+  final String? department;
+  final String? batchId;
 
   const AuthUserModel({
     required this.id,
     required this.email,
-    required this.department,
+     this.department,
+    this.batchId,
   });
 
   factory AuthUserModel.fromFirebaseAuthUser(
       firebase_auth.User firebaseUser,
-      Map<String, dynamic> facultyData,
+      Map<String, dynamic> userData,
+      String userType,
+      String batchId,
       ) {
-    return AuthUserModel(
-      id: firebaseUser.uid,
-      email: firebaseUser.email ?? '',
-      department: facultyData['department'],
-    );
+    if(userType == "Teacher") {
+      return AuthUserModel(
+        id: firebaseUser.uid,
+        email: firebaseUser.email ?? '',
+        department: userData['department'],
+      );
+    }
+    if(userType == "Student")
+      {
+        return AuthUserModel(
+          id: firebaseUser.uid,
+          email: firebaseUser.email ?? '',
+          department: 'CSE',
+          batchId: batchId,
+        );
+      }
+
+    return const AuthUserModel(id: 'id', email: 'email');
   }
 
 
@@ -32,6 +49,8 @@ class AuthUserModel extends Equatable {
       id: json['id'],
       email: json['email'],
       department: json['department'],
+      batchId: json['batchId'],
+
     );
   }
 
@@ -40,6 +59,7 @@ class AuthUserModel extends Equatable {
       'id': id,
       'email': email,
       'department': department,
+      'batchId':batchId,
     };
   }
 
@@ -48,9 +68,10 @@ class AuthUserModel extends Equatable {
       id: id,
       email: email,
       department: department,
+      batchId: batchId,
     );
   }
 
   @override
-  List<Object?> get props => [id, email, department];
+  List<Object?> get props => [id, email, department,batchId];
 }

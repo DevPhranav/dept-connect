@@ -10,6 +10,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final SaveUserDataUseCase _saveUserDataUseCase;
 
 
+
+
   SignInBloc({
     required SignInUseCase signInUseCase,
     required SaveUserDataUseCase saveUserDataUseCase,
@@ -47,18 +49,24 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             userType: userType,
           ),
         );
-        final authModel = AuthUserModel(id: authUser.id, email: authUser.email, department: authUser.department);
+        print(authUser.batchId);
+        final authModel = AuthUserModel(id: authUser.id, email: authUser.email, department: authUser.department,batchId: authUser.batchId);
 
         // Save user data after successful sign-in
         await _saveUserDataUseCase.execute(
           email: email,
           id: authUser.id,
           department: authUser.department,
+          userType:userType,
         );
 
         emit(SignInSuccessState(user: authModel));
       } catch (e) {
-        emit(SignInFailureState(errorMessage: e.toString()));
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: Exception:'.length);
+        }
+        emit(SignInFailureState(errorMessage: errorMessage));
       }
     }
   }

@@ -5,7 +5,8 @@ abstract class SecureStorageRepository {
   Future<void> saveUserData({
     required String email,
     required String id,
-    required String department,
+    required String? department,
+    required String? userType,
   });
 
   Future<AuthUserModel?> getUserData();
