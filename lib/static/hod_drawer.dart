@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../src/features/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
-import '../src/features/auth/presentation/blocs/sign_out/sign_out_event.dart';
-import '../src/features/auth/presentation/blocs/sign_out/sign_out_state.dart';
+import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
+import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_event.dart';
+import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_state.dart';
 class HodDrawer extends StatelessWidget {
   final String userName;
 
@@ -45,11 +44,11 @@ class HodDrawer extends StatelessWidget {
                 final currentRoute =
                     ModalRoute.of(context)?.settings.name;
 
-                if (currentRoute == "/hod_space_page") {
+                if (currentRoute == "/hod_space") {
                   Navigator.pop(context);
                 } else {
                   Navigator.popUntil(
-                      context, ModalRoute.withName("/hod_space_page"));
+                      context, ModalRoute.withName("/hod_space"));
                 }
               },
             ),

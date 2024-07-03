@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:29301401243:android:990a35f97e9a20c843c83e",
+        "android_client_info": {
+          "package_name": "com.example.firebase_auth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWvNL_fwtbFN0iUu5WeH9FWATmDFSGs08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:29301401243:android:7be787a1e97c2a1f43c83e",
         "android_client_info": {
           "package_name": "com.example.flutter_clean_architecture_with_firebase"
@@ -67,6 +86,25 @@
         "mobilesdk_app_id": "1:29301401243:android:47c66b5dae5eaf5843c83e",
         "android_client_info": {
           "package_name": "com.machine.miniproject_authentication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWvNL_fwtbFN0iUu5WeH9FWATmDFSGs08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29301401243:android:57d22a686da9d08943c83e",
+        "android_client_info": {
+          "package_name": "com.machine.my_try_firebase_auth"
         }
       },
       "oauth_client": [],
