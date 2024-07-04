@@ -66,6 +66,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             parentEmail: authUser.parentEmail,
             parentName: authUser.parentName,
             parentPhoneNumber: authUser.parentPhoneNumber,
+             userType: authUser.userType,
           );
         } else if (authUser.userType == "Teacher") {
           authModel = AuthUserModel(
@@ -76,6 +77,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             name: authUser.name,
             phoneNumber: authUser.phoneNumber,
             facultyId: authUser.facultyId,
+            userType: authUser.userType,
           );
         }
         // Save user data after successful sign-in

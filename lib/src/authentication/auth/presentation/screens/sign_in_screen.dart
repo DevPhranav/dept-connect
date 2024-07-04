@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../static/loading_indicator.dart';
 import '../../../../../../static/user_button.dart';
+import '../../../../students/home_page/presentation/screens/student_space_page.dart';
+import '../../../../teachers/features/hod_space/presentation/screens/hod_space_page.dart';
 import '../blocs/sign_in/sign_in_bloc.dart';
 import '../blocs/sign_in/sign_in_event.dart';
 import '../blocs/sign_in/sign_in_state.dart';
-import '../../../hod_space/presentation/screens/hod_space_page.dart';
-
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
@@ -57,9 +57,25 @@ class _SignInViewState extends State<SignInView> {
                   );
 
               } else if (state is SignInSuccessState) {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => HodSpacePage(user: state.user),
-                ));
+                if(state.user.userType == "Teacher"){
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HodSpacePage(user: state.user),
+                  ));
+                }
+                else if(state.user.userType == "Student")
+                  {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => StudentSpacePage(user: state.user),
+                    ));
+                  }
+                else{
+                  print(state.user.userType);
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HodSpacePage(user: state.user),
+                  ));
+                }
+
+
               }
             },
             builder: (context, state) {

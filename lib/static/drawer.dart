@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
-import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_event.dart';
-import '../src/teachers/features/auth/presentation/blocs/sign_out/sign_out_state.dart';
-class HodDrawer extends StatelessWidget {
-  final String userName;
 
-  const HodDrawer({super.key, required this.userName});
+import '../src/authentication/auth/data/models/auth_user_model.dart';
+import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
+import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_event.dart';
+import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_state.dart';
+class DeptDrawer extends StatelessWidget {
+  final AuthUserModel? user;
+
+  const DeptDrawer({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class HodDrawer extends StatelessWidget {
                     Icons.person_rounded,
                     size: 50,
                   ),
-                  Text(userName),
+                  Text(user?.name ?? ""),
                 ],
               ),
             ),
@@ -41,14 +43,28 @@ class HodDrawer extends StatelessWidget {
               title: const Text("Space"),
               splashColor: Colors.grey[150],
               onTap: () {
-                final currentRoute =
-                    ModalRoute.of(context)?.settings.name;
+                if(user?.userType == "Teacher")
+                  {
+                    final currentRoute =
+                        ModalRoute.of(context)?.settings.name;
 
-                if (currentRoute == "/hod_space") {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName("/hod_space"));
+                    if (currentRoute == "/hod_space") {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.popUntil(
+                          context, ModalRoute.withName("/hod_space"));
+                    }
+                  }
+                else if(user?.userType == "Student"){
+                  final currentRoute =
+                      ModalRoute.of(context)?.settings.name;
+
+                  if (currentRoute == "/student_space") {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.popUntil(
+                        context, ModalRoute.withName("/student_space"));
+                  }
                 }
               },
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../auth/data/models/auth_user_model.dart';
+import '../../../../../authentication/auth/data/models/auth_user_model.dart';
+
 
 class NavigationScreen extends StatelessWidget {
 
@@ -14,6 +15,10 @@ class NavigationScreen extends StatelessWidget {
       if (user!.role == 'HOD') {
         Navigator.pushReplacementNamed(context, '/hod_space');
       }
+      if(user!.userType== 'Student')
+        {
+          Navigator.pushReplacementNamed(context, '/student_space');
+        }
     });
 
     return const Scaffold(

@@ -5,6 +5,7 @@ import 'package:open_file/open_file.dart';
 import 'dart:io';
 import '../../../../../../../../../../static/empty_checkbox_container.dart';
 import '../../../../../../../../../../static/file_diplay_name.dart';
+import '../../../../../../../../../../static/file_download.dart';
 import '../../../../../../../../../../static/file_icon_choose.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_event.dart';
@@ -22,9 +23,11 @@ import '../bloc/announcement_details_full_screen_blocs/message_details_page_main
 import '../bloc/announcement_details_full_screen_blocs/message_details_page_main_bloc/message_details_page_state.dart';
 import '../bloc/stream_page_blocs/message_remove_bloc/message_remove_bloc.dart';
 import '../bloc/stream_page_blocs/message_remove_bloc/message_remove_event.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MessageDetailsPage extends StatelessWidget {
-  const MessageDetailsPage({super.key});
+  final String messageID;
+  const MessageDetailsPage({super.key, required this.messageID});
 
   @override
   Widget build(BuildContext context) {
@@ -280,11 +283,10 @@ class MessageDetailsPage extends StatelessWidget {
 
                           return GestureDetector(
                             onTap: () async {
-                              final filePath =
-                                  state.fileInfo[index]['filePath'];
+                              final filePath='${FileStorage.getExternalDocumentPath()}/$messageID/$fileName';
                               final file = File(filePath);
-
-                              if (await file.exists()) {
+                              final fileExists = file.existsSync();
+                              if (fileExists) {
                                 OpenFile.open(filePath);
                               } else {
                                 Fluttertoast.showToast(
@@ -353,7 +355,7 @@ class MessageDetailsPage extends StatelessWidget {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: _buildDownloadIcon(
-                                                  states, index, state),
+                                                  states, index, state,context),
                                             ),
                                           ),
                                         ),
@@ -378,22 +380,58 @@ class MessageDetailsPage extends StatelessWidget {
   }
 
   Widget _buildDownloadIcon(
-      FileDownloadState states, int index, MessageDetailsInitial state) {
-    if (states is FileDownloadingState && states.currentIndex == index) {
-      return Transform.scale(
-        scale: 0.5,
-        child: const CircularProgressIndicator(color: Colors.black),
-      );
-    } else if (states is FileDownloadCompletedState &&
-        states.completedIndex == index) {
-      state.fileInfo[states.completedIndex]['filePath'] = states.filePath;
-      return const Icon(Icons.check_circle, color: Colors.green, size: 23);
-    } else if (state.fileInfo[index]['filePath'] != null &&
-        File(state.fileInfo[index]['filePath']).existsSync()) {
-      return const Icon(Icons.check_circle, color: Colors.green, size: 23);
-    } else {
-      return const Icon(Icons.download, color: Colors.black, size: 23);
-    }
+      FileDownloadState states, int index, MessageDetailsInitial state, BuildContext context) {
+    final fileInfo = state.fileInfo[index];
+    final fileName = fileInfo['fileName'] ?? 'Unknown';
+    final id = state.id; // Assuming state.id represents the message ID
+
+    final downloadUrl = fileInfo['downloadUrl'] ?? 'https://via.placeholder.com/150';
+
+    return FutureBuilder<String>(
+      future: getPath(fileName),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the future to complete, show a loading indicator or a placeholder widget
+          return CircularProgressIndicator(color: Colors.black);
+        } else if (snapshot.hasError) {
+          // If there's an error fetching the file path, handle it here
+          return Icon(Icons.error, color: Colors.red); // Placeholder for error handling
+        } else {
+          final file = File(snapshot.data!);
+          final fileExists = file.existsSync();
+
+          if (fileExists) {
+            return GestureDetector(
+              onTap: () {
+                OpenFile.open(snapshot.data!);
+              },
+              child: Icon(Icons.check_circle, color: Colors.green, size: 23),
+            );
+          } else {
+            return GestureDetector(
+              onTap: () {
+                BlocProvider.of<FileDownloadBloc>(context).add(
+                  StartDownloadEvent(
+                    url: downloadUrl,
+                    fileName: fileName,
+                    index: index,
+                    id: id,
+                  ),
+                );
+              },
+              child: Icon(Icons.download, color: Colors.black, size: 23),
+            );
+          }
+        }
+      },
+    );
+  }
+
+  Future<String> getPath(String fileName) async {
+    final directory = await getExternalStorageDirectory();
+    final newDirectory = Directory('${directory?.path}/$messageID');
+    final filePath = '${newDirectory.path}/$fileName';
+    return filePath;
   }
 
   Widget _buildToWhomOverlay(

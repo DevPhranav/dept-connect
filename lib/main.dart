@@ -5,20 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/data/data_sources/auth_remote_data_source_firebase.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/data/models/auth_user_model.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/data/repositories/secure_storage_repository_impl.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/domain/repositories/auth_repository.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/domain/repositories/secure_storage_repository.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/domain/use_cases/delete_user_data_usecase.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/domain/use_cases/save_user_data_usecase.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/domain/use_cases/sign_in_use_case.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/presentation/blocs/sign_in/sign_in_bloc.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/presentation/screens/sign_in_screen.dart';
-import 'package:miniproject_authentication/src/teachers/features/auth/presentation/screens/splash_screen.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/data_sources/auth_remote_data_source_firebase.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/repositories/auth_repository_impl.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/repositories/secure_storage_repository_impl.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/repositories/auth_repository.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/repositories/secure_storage_repository.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/use_cases/delete_user_data_usecase.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/use_cases/save_user_data_usecase.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/use_cases/sign_in_use_case.dart';
+import 'package:miniproject_authentication/src/authentication/auth/presentation/blocs/sign_in/sign_in_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/presentation/screens/sign_in_screen.dart';
+import 'package:miniproject_authentication/src/authentication/auth/presentation/screens/splash_screen.dart';
+import 'package:miniproject_authentication/src/students/home_page/presentation/screens/student_space_page.dart';
+import 'package:miniproject_authentication/src/students/student_stream/domain/usecases/student_message_usecase.dart';
+import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_file_download_bloc/file_download_bloc.dart';
+import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_message_details_page_main_bloc/message_details_page_bloc.dart';
+import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_message_show_bloc/message_show_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/data_source/batch_creation_data_source_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/data_source/drop_down_data_source_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/repositories/batch_repository_impl.dart';
@@ -141,7 +146,9 @@ void main() {
 
       // Check if user data exists in SecureStorage
       final userData = await secureStorageRepository.getUserData();
+      print(userData);
       final userExists = userData != null;
+      print(userExists);
 
       // Navigate based on user existence
       return App(
@@ -216,6 +223,12 @@ class App extends StatelessWidget {
                   MessageUseCase(messageRepository: messageRepository),
             ),
           ),
+          BlocProvider(
+            create: (context) => StudentMessageBloc(
+              messageUseCase:
+              StudentMessageUseCase(),
+            ),
+          ),
           BlocProvider<MessageRemoveBloc>(
             create: (context) => MessageRemoveBloc(
                 messageUseCase:
@@ -231,6 +244,8 @@ class App extends StatelessWidget {
           ),
           BlocProvider<FileDownloadBloc>(
               create: (context) => FileDownloadBloc()),
+          BlocProvider<StudentFileDownloadBloc>(
+              create: (context) => StudentFileDownloadBloc()),
           BlocProvider<ToWhomOverlayCubit>(
               create: (context) => ToWhomOverlayCubit()),
           BlocProvider<AnnouncementBloc>(
@@ -259,7 +274,9 @@ class App extends StatelessWidget {
                       PushBatchDataUseCase(batchRepository: batchRepository),
                   batchYearCheckUseCase:
                       BatchYearCheckUseCase(batchRepository: batchRepository))),
-          BlocProvider<MessageDetailsBloc>(create: (_) => MessageDetailsBloc())
+
+          BlocProvider<MessageDetailsBloc>(create: (_) => MessageDetailsBloc()),
+          BlocProvider<StudentMessageDetailsBloc>(create: (_) => StudentMessageDetailsBloc())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -269,6 +286,7 @@ class App extends StatelessWidget {
           routes: {
             '/login': (context) => const SignInView(),
             '/hod_space': (context) => HodSpacePage(user: user),
+            '/student_space':(context)=> StudentSpacePage(user: user),
             '/home': (context) => NavigationScreen(user: user),
             '/hod_batch_creation_page': (context) => const BatchCreationPage(),
             '/hod_batch_announcement_page': (context) {

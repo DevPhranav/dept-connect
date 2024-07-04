@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../../static/hod_drawer.dart';
-import '../../../auth/data/models/auth_user_model.dart';
+import '../../../../../../static/drawer.dart';
+import '../../../../../authentication/auth/data/models/auth_user_model.dart';
 import '../bloc/navigation/hod_navigation_bloc.dart';
 import '../bloc/navigation/hod_navigation_event.dart';
 import '../bloc/navigation/hod_navigation_state.dart';
@@ -23,7 +23,7 @@ class HodBatchPage extends StatelessWidget {
       appBar: AppBar(
         title:const Text(''),
       ),
-      drawer: HodDrawer(userName: user!.name ?? "no user ",),
+      drawer: DeptDrawer(user:user),
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
           BlocProvider.of<MessageBloc>(context).add(LoadMessagesEvent(batchId: batchId));

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../../static/hod_drawer.dart';
-import '../../../auth/data/models/auth_user_model.dart';
+import '../../../../../../static/drawer.dart';
+import '../../../../../authentication/auth/data/models/auth_user_model.dart';
 import '../../../batch_creation/presentation/bloc/batch_senior_tutor_select_bloc/batch_senior_tutor_dropdown_bloc.dart';
 import '../../../batch_creation/presentation/bloc/batch_senior_tutor_select_bloc/batch_senior_tutor_dropdown_event.dart';
 import '../../../batch_creation/presentation/bloc/batch_year_bloc/batch_year_bloc.dart';
@@ -36,7 +36,7 @@ class HodSpacePageState extends State<HodSpacePage> {
         title: const Text("Space"),
         centerTitle: true,
       ),
-      drawer: HodDrawer(userName: widget.user?.name ?? 'No user name'),
+      drawer: DeptDrawer(user:widget.user),
       body: BlocBuilder<HodBatchBloc, HodBatchState>(
         builder: (context, state) {
           if (state is HodBatchLoading) {

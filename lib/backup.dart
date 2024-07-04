@@ -46,7 +46,7 @@
 // import 'package:miniproject_authentication/src/features/hod_space/domain/usecase/fetch_batch_ids_use_case.dart';
 // import 'package:miniproject_authentication/src/features/hod_space/presentation/blocs/hod_space/hod_batch_bloc.dart';
 // import 'package:miniproject_authentication/src/features/auth/presentation/screens/splash_screen.dart';
-// import 'package:miniproject_authentication/src/features/hod_batch/presentation/screens/hod_batch_page.dart';
+// import 'package:miniproject_authentication/src/features/hod_batch/presentation/screens/student_batch_page.dart';
 // import 'package:miniproject_authentication/src/features/hod_space/presentation/screens/hod_space_page.dart';
 // import 'package:miniproject_authentication/src/features/hod_space/presentation/screens/navigation_page.dart';
 // import 'firebase_options.dart';
