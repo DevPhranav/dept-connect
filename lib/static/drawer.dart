@@ -5,6 +5,7 @@ import '../src/authentication/auth/data/models/auth_user_model.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_event.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_state.dart';
+
 class DeptDrawer extends StatelessWidget {
   final AuthUserModel? user;
 
@@ -17,11 +18,24 @@ class DeptDrawer extends StatelessWidget {
         listener: (context, state) {
           if (state is SignOutInProgress) {
             // Show loading indicator
-            const CircularProgressIndicator();
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Center(child: CircularProgressIndicator());
+              },
+            );
           } else if (state is SignOutSuccess) {
+            Navigator.of(context).pop(); // Dismiss the progress dialog
             // Navigate to login page
             Navigator.pushNamedAndRemoveUntil(
                 context, '/login', (route) => false);
+          } else if (state is SignOutFailure) {
+            Navigator.of(context).pop(); // Dismiss the progress dialog
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Sign out failed')),
+            );
           }
         },
         child: ListView(
@@ -43,36 +57,29 @@ class DeptDrawer extends StatelessWidget {
               title: const Text("Space"),
               splashColor: Colors.grey[150],
               onTap: () {
-                if(user?.userType == "Teacher")
-                  {
-                    final currentRoute =
-                        ModalRoute.of(context)?.settings.name;
+                final currentRoute = ModalRoute.of(context)?.settings.name;
 
-                    if (currentRoute == "/hod_space") {
-                      Navigator.pop(context);
-                    } else {
-                      Navigator.popUntil(
-                          context, ModalRoute.withName("/hod_space"));
-                    }
+                if (user?.userType == "Teacher") {
+                  if (currentRoute == "/hod_space") {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.popUntil(context, ModalRoute.withName("/hod_space"));
                   }
-                else if(user?.userType == "Student"){
-                  final currentRoute =
-                      ModalRoute.of(context)?.settings.name;
-
+                } else if (user?.userType == "Student") {
                   if (currentRoute == "/student_space") {
                     Navigator.pop(context);
                   } else {
-                    Navigator.popUntil(
-                        context, ModalRoute.withName("/student_space"));
+                    Navigator.popUntil(context, ModalRoute.withName("/student_space"));
                   }
                 }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.help),
-              title: const Text("Requests"),
-              onTap: () {},
-            ),
+            if (user?.userType != "Student")
+              ListTile(
+                leading: const Icon(Icons.help),
+                title: const Text("Requests"),
+                onTap: () {},
+              ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Logout"),
@@ -82,26 +89,23 @@ class DeptDrawer extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text('Confirm Logout',
-                          style: TextStyle(color: Colors.black)),
+                      title: const Text('Confirm Logout', style: TextStyle(color: Colors.black)),
                       content: const Text('Are you sure you want to logout?'),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: const Text('Cancel',
-                              style: TextStyle(color: Colors.black)),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
-                          child: const Text('Logout',
-                              style: TextStyle(color: Colors.black)),
+                          child: const Text('Logout', style: TextStyle(color: Colors.black)),
                           onPressed: () {
-                            BlocProvider.of<SignOutBloc>(context)
-                                .add(SignOutRequested());
+                            Navigator.of(context).pop(); // Dismiss the confirmation dialog
+                            BlocProvider.of<SignOutBloc>(context).add(SignOutRequested());
                           },
                         ),
                       ],
