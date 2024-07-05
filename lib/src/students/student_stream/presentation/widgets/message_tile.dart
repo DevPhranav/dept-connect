@@ -11,6 +11,7 @@ class StudentMessageTile extends StatelessWidget {
   final String id;
   final DateTime editedDate;
   final String batchId;
+  final String sender;
 
 
   const StudentMessageTile({
@@ -21,7 +22,7 @@ class StudentMessageTile extends StatelessWidget {
     required this.attachmentFiles,
     required this.onTap,
     required this.id,
-    required this.toWhom, required this.editedDate,required this.batchId,
+    required this.toWhom, required this.editedDate,required this.batchId,required this.sender
   });
 
   @override
@@ -62,6 +63,14 @@ class StudentMessageTile extends StatelessWidget {
                           DateToDisplayFormat().formattedDate(date, editedDate),
                               // Change this to your date formatting logic
                               style: const TextStyle(
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              sender,
+                              // Change this to your date formatting logic
+                              style: const TextStyle(
+                                color:Colors.grey,
                                 fontSize: 13,
                               ),
                             ),

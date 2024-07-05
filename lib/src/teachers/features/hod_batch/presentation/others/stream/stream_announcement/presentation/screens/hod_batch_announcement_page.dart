@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:miniproject_authentication/src/authentication/auth/domain/entities/auth_user.dart';
 import '../../../../../../../../../../static/loading_dialog.dart';
+import '../../../../../../../../../authentication/auth/data/models/auth_user_model.dart';
 import '../bloc/announcement_page_blocs/announcement_send_bloc/announcement_bloc.dart';
 import '../bloc/announcement_page_blocs/announcement_send_bloc/announcement_state.dart';
 import 'checkbox_container.dart';
@@ -11,8 +13,9 @@ import 'floating_action_button.dart';
 
 class HodBatchAnnouncementPage extends StatefulWidget {
   final String batchId;
+  final AuthUserModel? user;
 
-  const HodBatchAnnouncementPage({super.key, required this.batchId});
+  const HodBatchAnnouncementPage({super.key, required this.batchId,required this.user});
 
 
   @override
@@ -107,7 +110,7 @@ class HodBatchAnnouncementPageState extends State<HodBatchAnnouncementPage> {
                       color: Colors.grey[200],
                     ),
                     padding: const EdgeInsets.all(10),
-                    child: CheckBoxContainer().buildCheckBoxes(context),
+                    child: CheckBoxContainer().buildCheckBoxes(context,widget.user),
                   ),
                   const SizedBox(height: 20),
                   BuildAnnouncementInputTile().buildAnnouncementTitleInputTile(
@@ -125,11 +128,11 @@ class HodBatchAnnouncementPageState extends State<HodBatchAnnouncementPage> {
         builder: (context, state) {
           if(state is AnnouncementEditFromDetailsPageState) {
             return floatingButton.buildFloatingActionButton(widget.batchId,
-              context, _announcementMessage, _announcementTitleMessage,true);
+              context, _announcementMessage, _announcementTitleMessage,true,widget.user);
           }
           else {
             return floatingButton.buildFloatingActionButton(widget.batchId,
-              context, _announcementMessage, _announcementTitleMessage,false);
+              context, _announcementMessage, _announcementTitleMessage,false,widget.user);
           }
         },
       ),

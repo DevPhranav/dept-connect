@@ -9,9 +9,9 @@ class HodBatchRepositoryImpl implements HodBatchRepository {
   HodBatchRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<String>> fetchBatchIds(String dept) async {
+  Future<List<String>> fetchBatchIds(String dept,String facultyId,String role) async {
     try {
-      return await remoteDataSource.fetchBatchIdsFromDatabase(dept);
+      return await remoteDataSource.fetchBatchIdsFromDatabase(dept,facultyId,role);
     } catch (error) {
       throw error;
     }

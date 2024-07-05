@@ -78,6 +78,13 @@ class StudentMessageDetailsPage extends StatelessWidget {
                               fontSize: 13,
                             ),
                           ),
+                          Text(
+                            state.sender,
+                            style: const TextStyle(
+                              color:Colors.grey,
+                              fontSize: 13,
+                            ),
+                          ),
                         ],
                       ),
                     ),

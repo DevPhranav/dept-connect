@@ -13,9 +13,9 @@ class SendMessageRepositoryImpl extends SendMessageRepository {
 
 
   @override
-  Future<String> sendMessageToFirebase(String announcementMessage, String titleMessage, List<Map<String, dynamic>> checkboxes, List<File> pickedFiles, DateTime editedDate, String docId, String batchId) {
+  Future<String> sendMessageToFirebase(String announcementMessage, String titleMessage, List<Map<String, dynamic>> checkboxes, List<File> pickedFiles, DateTime editedDate, String docId, String batchId,String? sender) {
     return firestoreSendDataSource.sendMessageToFirebase(announcementMessage,
-        titleMessage, checkboxes, pickedFiles, editedDate, batchId);
+        titleMessage, checkboxes, pickedFiles, editedDate, batchId,sender);
   }
 
   @override

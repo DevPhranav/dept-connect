@@ -26,7 +26,7 @@ class HodSpacePageState extends State<HodSpacePage> {
   void initState() {
     super.initState();
     // Dispatch the event to load batches
-    context.read<HodBatchBloc>().add(HodBatchLoadRequestedEvent(widget.user!.department ?? "CSE"));
+    context.read<HodBatchBloc>().add(HodBatchLoadRequestedEvent(widget.user!.department ?? "CSE",widget.user!.facultyId??"",widget.user!.role??"HOD"));
   }
 
   @override
@@ -56,7 +56,7 @@ class HodSpacePageState extends State<HodSpacePage> {
                           final batchId = state.batchIds[index];
                           print(batchId);
                           // Handle the tap event for batch tile
-                          context.read<MessageBloc>().setBatchId(batchId);
+                          context.read<MessageBloc>().setBatchId(batchId,widget.user);
                           Navigator.pushNamed(
                             context,
                             "/hod_batch_page",
@@ -84,7 +84,7 @@ class HodSpacePageState extends State<HodSpacePage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.user!.role == 'HOD' ? FloatingActionButton(
         onPressed: () {
           BlocProvider.of<BatchYearBloc>(context).add(BatchYearInitialEvent());
           BlocProvider.of<DropdownBloc>(context).add(DropDownInitialEvent());
@@ -94,7 +94,8 @@ class HodSpacePageState extends State<HodSpacePage> {
         backgroundColor: Colors.grey[50],
         elevation: 3,
         child: const Icon(Icons.add),
-      ),
+      ) : null,
+
     );
   }
 }

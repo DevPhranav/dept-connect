@@ -13,7 +13,7 @@ class SendUpdateMessageUseCase {
       List<File> pickedFiles,
       DateTime editedDate,
       String docId,
-      String batchId) async {
+      String batchId,String? sender) async {
     try {
       return await sendUpdateMessageRepository.sendMessageToFirebase(
           announcementMessage,
@@ -22,7 +22,7 @@ class SendUpdateMessageUseCase {
           pickedFiles,
           editedDate,
           docId,
-          batchId);
+          batchId,sender);
     } catch (error) {
       throw Exception('Failed to send message: $error');
     }

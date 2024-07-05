@@ -4,8 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../domain/repositories/FirestoreDataSource.dart';
 
-
-
 class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -62,8 +60,6 @@ class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
         filesInfo.add({'fileName': fileName, 'downloadUrl': downloadUrl});
       }
 
-
-
       // Update the document with the new message content and file information
       await docRef.update({
         'title': titleMessage,
@@ -80,15 +76,37 @@ class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
     }
   }
 
-
   @override
-  Future<String> sendMessageToFirebase(String announcementMessage, String titleMessage, List<Map<String, dynamic>> checkboxes, List<File> pickedFiles, DateTime editedDate, String batchId) async {
-    String docId='no id';
+  Future<String> sendMessageToFirebase(
+      String announcementMessage,
+      String titleMessage,
+      List<Map<String, dynamic>> checkboxes,
+      List<File> pickedFiles,
+      DateTime editedDate,
+      String batchId,
+      String? sender) async {
+    String docId = 'no id';
     try {
+      DocumentReference seniorTutorDocRef = _firestore
+          .collection('departments')
+          .doc('CSE')
+          .collection('batches')
+          .doc(batchId);
+
+      // Fetch the senior_tutor_id from the document
+      DocumentSnapshot seniorTutorSnapshot = await seniorTutorDocRef.get();
+      String? seniorTutorId = seniorTutorSnapshot.get('senior_tutor_id');
+
       // Filter the selected categories based on checkboxes
       List selectedCategories = checkboxes
           .where((checkbox) => checkbox['isChecked'] == true)
-          .map((checkbox) => checkbox['name'])
+          .map((checkbox) {
+        if (checkbox['name'] == 'seniorTutor' && seniorTutorId != null) {
+          return 'seniorTutor:$seniorTutorId';
+        } else {
+          return checkbox['name'];
+        }
+      })
           .toList();
 
       DocumentReference docRef = _firestore
@@ -117,31 +135,26 @@ class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
       await docRef.set({
         'title': titleMessage,
         'content': announcementMessage,
-        'sender': 'Hod',
+        'sender': sender,
         'timestamp': FieldValue.serverTimestamp(),
         'toWhom': selectedCategories,
         'editedDate': editedDate,
         'fileInfo': filesInfo,
-      })
-          .then((value) {
+      }).then((value) {
         // Get the document ID after the document is created
         docId = docRef.id;
 
         // Update the document with the ID
         return docRef.update({'id': docId}); // Return the update Future
-      })
-          .then((value) {
+      }).then((value) {
         // Additional actions after update, if needed
         print('Document created and updated successfully!');
       });
-
     } catch (e) {
       print('Failed to send message to Firebase: $e');
       throw e;
     }
     return docId;
   }
-
-
 
 }

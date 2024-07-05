@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import '../entities/announcementMessage.dart';
 import '../repositories/MessageRepository.dart';
 
@@ -16,7 +17,7 @@ class MessageUseCase {
     }
   }
 
-  Future<List<AnnouncementMessage>> loadMessages(String batchId) async {
+  Future<List<AnnouncementMessage>> loadMessages(String batchId, AuthUserModel? user) async {
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('departments')
@@ -26,7 +27,9 @@ class MessageUseCase {
           .collection('batchesMessages')
           .get();
 
-      final messages = snapshot.docs.map((doc) {
+      final messages = snapshot.docs
+          .where((doc) =>  doc['sender'] == user?.name)
+          .map((doc) {
         final data = doc.data();
         final List<dynamic> toWhom = data['toWhom'] ?? [];
         final List<Map<String, dynamic>> fileInfo = data['fileInfo'] != null
@@ -45,7 +48,8 @@ class MessageUseCase {
           timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
           editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
         );
-      }).toList();
+      })
+          .toList();
 
       // Sort messages by timestamp
       messages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -56,7 +60,7 @@ class MessageUseCase {
     }
   }
 
-  Stream<List<AnnouncementMessage>> getMessageStream(String batchId) {
+  Stream<List<AnnouncementMessage>> getMessageStream(String batchId, AuthUserModel? user) {
     return FirebaseFirestore.instance
         .collection('departments')
         .doc('CSE')
@@ -65,7 +69,9 @@ class MessageUseCase {
         .collection('batchesMessages')
         .snapshots()
         .map((snapshot) {
-      final messages = snapshot.docs.map((doc) {
+      return snapshot.docs
+          .where((doc) =>doc['sender'] == user?.name)
+          .map((doc) {
         final data = doc.data();
         final List<dynamic> toWhom = data['toWhom'] ?? [];
         final List<Map<String, dynamic>> fileInfo = data['fileInfo'] != null
@@ -84,12 +90,10 @@ class MessageUseCase {
           timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
           editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
         );
-      }).toList();
-
-      // Sort messages by timestamp
-      messages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-      return messages;
+      })
+          .toList()
+        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
   }
+
 }

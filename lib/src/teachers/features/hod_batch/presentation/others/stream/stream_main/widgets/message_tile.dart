@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import '../../../../../../../../../static/date_to_display_format.dart';
 import '../../../../../../../../../static/file_icon_choose.dart';
 import '../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
@@ -8,6 +9,7 @@ import '../../stream_announcement/presentation/bloc/announcement_page_blocs/anno
 import '../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_send_bloc/announcement_event.dart';
 import '../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_bloc.dart';
 import '../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_event.dart';
+import '../../stream_announcement/presentation/screens/hod_batch_announcement_page.dart';
 import '../presentation/bloc/stream_page_blocs/message_remove_bloc/message_remove_bloc.dart';
 import '../presentation/bloc/stream_page_blocs/message_remove_bloc/message_remove_event.dart';
 
@@ -21,6 +23,7 @@ class MessageTile extends StatelessWidget {
   final String id;
   final DateTime editedDate;
   final String batchId;
+  final AuthUserModel? user;
 
   const MessageTile({
     super.key,
@@ -30,7 +33,7 @@ class MessageTile extends StatelessWidget {
     required this.attachmentFiles,
     required this.onTap,
     required this.id,
-    required this.toWhom, required this.editedDate,required this.batchId,
+    required this.toWhom, required this.editedDate,required this.batchId, this.user,
   });
 
   @override
@@ -198,8 +201,12 @@ class MessageTile extends StatelessWidget {
                         ),
 
                       );
-                      Navigator.pushNamed(context, "/hod_batch_announcement_page",arguments: batchId);
-                      print("Edit tapped");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HodBatchAnnouncementPage(batchId: batchId,user:user),
+                          ),
+                        );
 
 
                       } else if (value == "delete") {

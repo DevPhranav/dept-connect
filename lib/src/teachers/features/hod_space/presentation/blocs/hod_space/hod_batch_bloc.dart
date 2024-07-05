@@ -17,7 +17,7 @@ class HodBatchBloc extends Bloc<HodBatchEvent, HodBatchState> {
       ) async {
     emit(HodBatchLoading());
     try {
-      final batches = await fetchBatchIdsUseCase(event.dept);
+      final batches = await fetchBatchIdsUseCase(event.dept,event.facultyId,event.role);
       emit(HodBatchLoaded(batches));
     } catch (e) {
       emit(HodBatchError('Failed to load batches: $e'));

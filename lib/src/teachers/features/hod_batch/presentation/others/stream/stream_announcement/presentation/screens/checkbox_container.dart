@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import '../../../../../../../../../../static/checkbox_title.dart';
 import '../bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
 import '../bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_event.dart';
@@ -7,7 +8,7 @@ import '../bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_st
 
 
 class CheckBoxContainer {
-  Column buildCheckBoxes(BuildContext context) {
+  Column buildCheckBoxes(BuildContext context,AuthUserModel? user) {
     return Column(
       children: [
         BlocBuilder<CheckBoxBloc, CheckBoxState>(
@@ -43,29 +44,30 @@ class CheckBoxContainer {
                       value: checkBoxes[0]["isChecked"],
                       onChanged: (value) {
                         BlocProvider.of<CheckBoxBloc>(context).add(
-                          ToggleAllCheckBoxEvent(newValue: value ?? false),
+                          ToggleAllCheckBoxEvent(newValue: value ?? false,isHod:(user!.role =='HOD')??false),
                         ); // 'All', json index 0
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40.0),
-                      child: IgnorePointer(
-                        ignoring: checkBoxes[0]["isChecked"],
-                        child: Opacity(
-                          opacity: !checkBoxes[0]["isChecked"] ? 1.0 : 0.5,
-                          child: CheckboxTile(
-                            label: "Senior Tutor",
-                            value: checkBoxes[10]["isChecked"],
-                            onChanged: (value) {
-                              BlocProvider.of<CheckBoxBloc>(context).add(
-                                ToggleNotificationEvent(
-                                    index: 10, newValue: value ?? false),
-                              ); // senior Tutor json index is 10
-                            },
+                    if (user?.role == "HOD")
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40.0),
+                        child: IgnorePointer(
+                          ignoring: checkBoxes[0]["isChecked"],
+                          child: Opacity(
+                            opacity: !checkBoxes[0]["isChecked"] ? 1.0 : 0.5,
+                            child: CheckboxTile(
+                              label: "Senior Tutor",
+                              value: checkBoxes[10]["isChecked"],
+                              onChanged: (value) {
+                                BlocProvider.of<CheckBoxBloc>(context).add(
+                                  ToggleNotificationEvent(
+                                      index: 10, newValue: value ?? false),
+                                ); // senior Tutor json index is 10
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
                 teachersRow(checkBoxes, context),
@@ -73,6 +75,7 @@ class CheckBoxContainer {
                 parentsRow(checkBoxes, context),
               ],
             );
+
           },
         ),
       ],

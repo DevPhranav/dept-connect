@@ -9,8 +9,9 @@ class HodBatchEvent extends Equatable {
 
 class HodBatchLoadRequestedEvent extends HodBatchEvent {
   final String dept;
-
-  const HodBatchLoadRequestedEvent(this.dept);
+  final String facultyId;
+  final String role;
+  const HodBatchLoadRequestedEvent(this.dept,this.facultyId,this.role);
 
   @override
   List<Object> get props => [dept];

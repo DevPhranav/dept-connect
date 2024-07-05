@@ -12,7 +12,7 @@ class NavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (user!.role == 'HOD') {
+      if (user!.userType == 'Teacher') {
         Navigator.pushReplacementNamed(context, '/hod_space');
       }
       if(user!.userType== 'Student')

@@ -104,6 +104,10 @@ class CheckBoxBloc extends Bloc<CheckBoxEvent, CheckBoxState> {
     final updatedCheckBoxes = List<Map<String, dynamic>>.from(state.checkBoxes);
     for (var i = 0; i < updatedCheckBoxes.length; i++) {
       updatedCheckBoxes[i]["isChecked"] = event.newValue;
+      if(!event.isHod && (updatedCheckBoxes[i]["name"]=="seniorTutor"))
+        {
+          updatedCheckBoxes[i]["isChecked"]=false;
+        }
     }
 
     emit(state.copyWith(

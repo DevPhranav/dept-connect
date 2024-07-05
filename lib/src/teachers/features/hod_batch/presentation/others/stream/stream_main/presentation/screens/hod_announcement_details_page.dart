@@ -7,6 +7,7 @@ import '../../../../../../../../../../static/empty_checkbox_container.dart';
 import '../../../../../../../../../../static/file_diplay_name.dart';
 import '../../../../../../../../../../static/file_download.dart';
 import '../../../../../../../../../../static/file_icon_choose.dart';
+import '../../../../../../../../../authentication/auth/data/models/auth_user_model.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_event.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_send_bloc/announcement_bloc.dart';
@@ -14,6 +15,7 @@ import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/a
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_send_bloc/announcement_state.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_bloc.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_event.dart';
+import '../../../stream_announcement/presentation/screens/hod_batch_announcement_page.dart';
 import '../bloc/announcement_details_full_screen_blocs/ToWhomCubit/to_whom_cubit.dart';
 import '../bloc/announcement_details_full_screen_blocs/file_download_bloc/file_download_bloc.dart';
 import '../bloc/announcement_details_full_screen_blocs/file_download_bloc/file_download_event.dart';
@@ -27,7 +29,9 @@ import 'package:path_provider/path_provider.dart';
 
 class MessageDetailsPage extends StatelessWidget {
   final String messageID;
-  const MessageDetailsPage({super.key, required this.messageID});
+  final String batchId;
+  final AuthUserModel? user;
+  const MessageDetailsPage({super.key, required this.messageID, required this.batchId, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +208,12 @@ class MessageDetailsPage extends StatelessWidget {
                         isAllChecked: isAllChecked,
                       ),
                     );
-                    Navigator.pushNamed(context, "/hod_batch_announcement_page",
-                        arguments: state.batchId);
-                    print("Edit tapped");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HodBatchAnnouncementPage(batchId: batchId,user:user),
+                      ),
+                    );
                   } else if (value == "delete") {
                     _showDeleteConfirmationDialog(context, state);
                   }

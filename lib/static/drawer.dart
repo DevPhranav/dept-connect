@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/students/home_page/presentation/screens/student_space_page.dart';
 
 import '../src/authentication/auth/data/models/auth_user_model.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_event.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_state.dart';
+import '../src/teachers/features/hod_space/presentation/screens/hod_space_page.dart';
 
 class DeptDrawer extends StatelessWidget {
   final AuthUserModel? user;
@@ -63,21 +65,37 @@ class DeptDrawer extends StatelessWidget {
                   if (currentRoute == "/hod_space") {
                     Navigator.pop(context);
                   } else {
-                    Navigator.popUntil(context, ModalRoute.withName("/hod_space"));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HodSpacePage(user: user)),
+                          (route) => false,
+                    );
                   }
                 } else if (user?.userType == "Student") {
                   if (currentRoute == "/student_space") {
                     Navigator.pop(context);
                   } else {
-                    Navigator.popUntil(context, ModalRoute.withName("/student_space"));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => StudentSpacePage(user: user)),
+                          (route) => false,
+                    );
                   }
                 }
               },
             ),
+
             if (user?.userType != "Student")
+              if(user?.role == "HOD")
               ListTile(
                 leading: const Icon(Icons.help),
                 title: const Text("Requests"),
+                onTap: () {},
+              ),
+            if(user?.role != "HOD")
+              ListTile(
+                leading: const Icon(Icons.announcement),
+                title: const Text("announcements"),
                 onTap: () {},
               ),
             ListTile(

@@ -88,6 +88,7 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
         event.editedDate,
         event.id,
         event.batchId,
+        event.sender
       );
 
       // Emit a success state if sending to Firestore is successful

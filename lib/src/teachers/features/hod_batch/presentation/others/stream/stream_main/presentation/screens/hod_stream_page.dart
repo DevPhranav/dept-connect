@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import '../../../../../../../../../../static/calculate_year.dart';
 import '../../../../../../../../../../static/date_to_display_format.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
@@ -8,6 +9,7 @@ import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/a
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/announcement_send_bloc/announcement_event.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_bloc.dart';
 import '../../../stream_announcement/presentation/bloc/announcement_page_blocs/file_upload_bloc/file_upload_event.dart';
+import '../../../stream_announcement/presentation/screens/hod_batch_announcement_page.dart';
 import '../../widgets/message_tile.dart';
 import '../../widgets/stream_announce_tile.dart';
 import '../../widgets/stream_tile.dart';
@@ -19,8 +21,9 @@ import 'hod_announcement_details_page.dart';
 
 class HodBatchStreamPage extends StatelessWidget {
   final String batchId;
+  final AuthUserModel? user;
 
-  const HodBatchStreamPage({super.key, required this.batchId});
+  const HodBatchStreamPage({super.key, required this.batchId,required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,12 @@ class HodBatchStreamPage extends StatelessWidget {
                         .add(AnnouncementInitialEvent());
                     BlocProvider.of<FilePickBloc>(context)
                         .add(FilePickInitialEvent());
-                    Navigator.pushNamed(context, "/hod_batch_announcement_page");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HodBatchAnnouncementPage(batchId: batchId,user:user),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -94,7 +102,7 @@ class HodBatchStreamPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MessageDetailsPage(messageID: announcementMessage.id,),
+                            builder: (context) => MessageDetailsPage(messageID: announcementMessage.id,batchId:batchId,user:user),
                           ),
                         );
                       },

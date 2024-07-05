@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import '../../../../domain/usecases/message_usecase.dart';
 import 'message_show_event.dart';
 import 'message_show_state.dart';
@@ -16,10 +17,10 @@ class MessageBloc extends Bloc<MessageEvent, MessagesState> {
 
   }
 
-  void setBatchId(String batchId) {
+  void setBatchId(String batchId,AuthUserModel? user) {
     this.batchId = batchId;
     _messageSubscription?.cancel(); // Cancel previous subscription
-    _messageSubscription = messageUseCase.getMessageStream(batchId).listen((messages) {
+    _messageSubscription = messageUseCase.getMessageStream(batchId,user).listen((messages) {
       add(UpdateMessagesEvent(messages));
     });
   }
@@ -33,7 +34,7 @@ class MessageBloc extends Bloc<MessageEvent, MessagesState> {
   void _onLoadMessages(LoadMessagesEvent event, Emitter<MessagesState> emit) async {
     emit(MessageLoadingState());
     try {
-      final messages = await messageUseCase.loadMessages(event.batchId);
+      final messages = await messageUseCase.loadMessages(event.batchId,event.user);
       emit(MessageLoadedState(messages));
     } catch (e) {
       emit(MessageErrorState(e.toString()));

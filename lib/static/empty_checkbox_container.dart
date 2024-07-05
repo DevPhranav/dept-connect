@@ -27,18 +27,19 @@ class EmptyCheckBoxContainer {
                   ),
                 ),
                 Opacity(
-                  opacity: checkedBoxes.contains("seniorTutor") ? 1.0 : 0.5,
+                  opacity: checkedBoxes.any((box) => box.startsWith("seniorTutor")) ? 1.0 : 0.5,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 40.0),
                     child: CheckboxTile(
                       label: "Senior Tutor",
-                      value: checkedBoxes.contains("seniorTutor"),
+                      value: checkedBoxes.any((box) => box.startsWith("seniorTutor")),
                       onChanged: (value) {
                         // Handle onChanged
                       },
                     ),
                   ),
-                ),
+                )
+
               ],
             ),
             teachersRow(context),

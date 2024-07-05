@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 
 import '../../../../../../../../../../static/snack_bar_helper.dart';
 import '../bloc/announcement_page_blocs/announcement_check_box_bloc/check_box_bloc.dart';
@@ -12,7 +13,7 @@ class FloatingActionButtons {
       String batchId,
       BuildContext context,
       TextEditingController announcementMessage,
-      TextEditingController announcementTitleMessage, bool isDetailsPage) {
+      TextEditingController announcementTitleMessage, bool isDetailsPage,AuthUserModel? user) {
     return FloatingActionButton(
       onPressed: () {
         final checkBoxState = BlocProvider.of<CheckBoxBloc>(context).state;
@@ -51,6 +52,7 @@ class FloatingActionButtons {
                 editedDate: DateTime.now(),
                 id: id,
                 batchId:batchId,
+                sender:user!.name
               ),
             );
           }

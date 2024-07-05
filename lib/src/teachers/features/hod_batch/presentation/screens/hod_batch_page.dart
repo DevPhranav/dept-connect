@@ -26,9 +26,9 @@ class HodBatchPage extends StatelessWidget {
       drawer: DeptDrawer(user:user),
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
-          BlocProvider.of<MessageBloc>(context).add(LoadMessagesEvent(batchId: batchId));
+          BlocProvider.of<MessageBloc>(context).add(LoadMessagesEvent(batchId: batchId,user:user));
           final List<Widget> hodBatchPages = [
-            HodBatchStreamPage(batchId: batchId),
+            HodBatchStreamPage(batchId: batchId,user:user),
             SemesterListView(batchId: batchId),
             HodBatchPeoplePage(batchId: batchId),
           ];

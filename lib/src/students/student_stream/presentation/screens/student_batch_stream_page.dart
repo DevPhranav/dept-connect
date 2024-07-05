@@ -48,6 +48,7 @@ class StudentBatchStreamPage extends StatelessWidget {
                         content: announcementMessage.content,
                         id: announcementMessage.id,
                         batchId: batchId,
+                        sender: announcementMessage.sender,
                         onTap: () {
                           BlocProvider.of<StudentMessageDetailsBloc>(context).add(
                             StudentMessageDetailsInitialEvent(

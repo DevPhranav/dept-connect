@@ -289,10 +289,7 @@ class App extends StatelessWidget {
             '/student_space':(context)=> StudentSpacePage(user: user),
             '/home': (context) => NavigationScreen(user: user),
             '/hod_batch_creation_page': (context) => const BatchCreationPage(),
-            '/hod_batch_announcement_page': (context) {
-              final args = ModalRoute.of(context)!.settings.arguments as String;
-              return HodBatchAnnouncementPage(batchId: args);
-            },
+
             '/hod_batch_course_details_page': (context) =>
                 const HodBatchCourseDetailsPage(
                   batchId: '',

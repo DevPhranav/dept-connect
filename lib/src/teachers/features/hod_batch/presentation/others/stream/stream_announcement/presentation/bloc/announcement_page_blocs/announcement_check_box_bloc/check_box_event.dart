@@ -25,8 +25,9 @@ class ToggleNotificationEvent extends CheckBoxEvent {
 // Event to toggle all checkboxes except the "All" checkbox
 class ToggleAllCheckBoxEvent extends CheckBoxEvent {
   final bool newValue;
+  final bool isHod;
 
-  ToggleAllCheckBoxEvent({required this.newValue});
+  ToggleAllCheckBoxEvent({required this.newValue,required this.isHod});
 
   @override
   List<Object?> get props => [newValue];

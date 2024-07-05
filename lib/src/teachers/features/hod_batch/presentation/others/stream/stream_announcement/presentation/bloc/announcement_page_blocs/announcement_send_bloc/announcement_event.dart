@@ -17,13 +17,13 @@ class AnnouncementSendEvent extends AnnouncementEvent {
   final DateTime editedDate;
   final String id;
   final String batchId;
-
+  final String? sender;
   AnnouncementSendEvent(
       {required this.announcementMessage,
       required this.titleMessage,
       required this.checkBoxes,
       required this.pickedFiles,
-      required this.editedDate,required this.id,required this.batchId});
+      required this.editedDate,required this.id,required this.batchId,required this.sender});
 
   @override
   List<Object?> get props =>
