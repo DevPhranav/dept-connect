@@ -10,15 +10,15 @@ class StudentLoadMessagesEvent extends StudentMessageEvent {
   StudentLoadMessagesEvent({required this.batchId});
 }
 
-class LoadMessageInitialEvent extends StudentMessageEvent{
+class StudentLoadMessageInitialEvent extends StudentMessageEvent{
   final String batchId;
 
-  LoadMessageInitialEvent({required this.batchId});
+  StudentLoadMessageInitialEvent({required this.batchId});
 
 }
 
-class UpdateMessagesEvent extends StudentMessageEvent {
+class StudentUpdateMessagesEvent extends StudentMessageEvent {
   final List<StudentAnnouncementMessage> messages;
 
-  UpdateMessagesEvent(this.messages);
+  StudentUpdateMessagesEvent(this.messages);
 }

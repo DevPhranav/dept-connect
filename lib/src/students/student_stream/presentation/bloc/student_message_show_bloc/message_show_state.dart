@@ -5,18 +5,18 @@ import '../../../domain/entites/studentAnnouncementMessage.dart';
 
 abstract class StudentMessagesState {}
 
-class MessageInitialState extends StudentMessagesState {}
+class StudentMessageInitialState extends StudentMessagesState {}
 
-class MessageLoadingState extends StudentMessagesState {}
+class StudentMessageLoadingState extends StudentMessagesState {}
 
-class MessageLoadedState extends StudentMessagesState {
+class StudentMessageLoadedState extends StudentMessagesState {
   final List<StudentAnnouncementMessage> messages;
 
-  MessageLoadedState(this.messages);
+  StudentMessageLoadedState(this.messages);
 }
 
-class MessageErrorState extends StudentMessagesState {
+class StudentMessageErrorState extends StudentMessagesState {
   final String error;
 
-  MessageErrorState(this.error);
+  StudentMessageErrorState(this.error);
 }

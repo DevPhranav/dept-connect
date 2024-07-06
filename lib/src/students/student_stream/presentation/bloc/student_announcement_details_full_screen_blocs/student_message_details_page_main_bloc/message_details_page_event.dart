@@ -14,7 +14,7 @@ class StudentMessageDetailsInitialEvent extends StudentMessageDetailsEvent{
 
   StudentMessageDetailsInitialEvent({required this.id, required this.title, required this.content, required this.sender, required this.toWhom, required this.fileInfo, required this.timestamp, required this.batchId});
 }
-class EditSuccessMessageEvent extends StudentMessageDetailsEvent {
+class StudentEditSuccessMessageEvent extends StudentMessageDetailsEvent {
   final String id;
   final String title;
   final String content;
@@ -24,7 +24,7 @@ class EditSuccessMessageEvent extends StudentMessageDetailsEvent {
   final String timestamp;
   final String batchId;
 
-  EditSuccessMessageEvent({required this.id, required this.title, required this.content, required this.sender, required this.toWhom, required this.fileInfo, required this.timestamp, required this.batchId});
+  StudentEditSuccessMessageEvent({required this.id, required this.title, required this.content, required this.sender, required this.toWhom, required this.fileInfo, required this.timestamp, required this.batchId});
 
 
 }

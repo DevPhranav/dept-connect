@@ -93,21 +93,12 @@ class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
           .collection('batches')
           .doc(batchId);
 
-      // Fetch the senior_tutor_id from the document
-      DocumentSnapshot seniorTutorSnapshot = await seniorTutorDocRef.get();
-      String? seniorTutorId = seniorTutorSnapshot.get('senior_tutor_id');
-
       // Filter the selected categories based on checkboxes
       List selectedCategories = checkboxes
           .where((checkbox) => checkbox['isChecked'] == true)
           .map((checkbox) {
-        if (checkbox['name'] == 'seniorTutor' && seniorTutorId != null) {
-          return 'seniorTutor:$seniorTutorId';
-        } else {
-          return checkbox['name'];
-        }
-      })
-          .toList();
+        return checkbox['name'];
+      }).toList();
 
       DocumentReference docRef = _firestore
           .collection('departments')
@@ -156,5 +147,4 @@ class FirestoreSendDataSourceImpl implements FirestoreSendDataSource {
     }
     return docId;
   }
-
 }

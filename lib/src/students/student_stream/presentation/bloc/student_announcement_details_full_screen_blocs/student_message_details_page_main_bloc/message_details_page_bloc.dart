@@ -15,7 +15,7 @@ class StudentMessageDetailsBloc
       fileInfo: [],
       timestamp: '',
       batchId: '')) {
-    on<EditSuccessMessageEvent>(_editMessageAction);
+    on<StudentEditSuccessMessageEvent>(_editMessageAction);
     on<StudentMessageDetailsInitialEvent>(_detailsPageInitial);
   }
 
@@ -33,8 +33,7 @@ class StudentMessageDetailsBloc
   }
 
 
-  void _editMessageAction(EditSuccessMessageEvent event, emit) {
-    print(" timestamp;;;;;;;;;;;;;;;${event.timestamp}");
+  void _editMessageAction(StudentEditSuccessMessageEvent event, emit) {
     emit(StudentMessageDetailsInitial(
         id: event.id,
         title: event.title,

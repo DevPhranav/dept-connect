@@ -36,7 +36,7 @@ class HodSpacePageState extends State<HodSpacePage> {
         title: const Text("Space"),
         centerTitle: true,
       ),
-      drawer: DeptDrawer(user:widget.user),
+      drawer: DeptDrawer(user:widget.user,""),
       body: BlocBuilder<HodBatchBloc, HodBatchState>(
         builder: (context, state) {
           if (state is HodBatchLoading) {

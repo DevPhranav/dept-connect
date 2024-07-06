@@ -6,12 +6,16 @@ import '../src/authentication/auth/data/models/auth_user_model.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_event.dart';
 import '../src/authentication/auth/presentation/blocs/sign_out/sign_out_state.dart';
+import '../src/teachers/announcements/presentation/blocs/communication_announcement_blocs/faculty_message_show_bloc/faculty_message_bloc.dart';
+import '../src/teachers/announcements/presentation/blocs/communication_announcement_blocs/faculty_message_show_bloc/faculty_message_event.dart';
+import '../src/teachers/announcements/presentation/screens/communication_announcement_page.dart';
 import '../src/teachers/features/hod_space/presentation/screens/hod_space_page.dart';
 
 class DeptDrawer extends StatelessWidget {
   final AuthUserModel? user;
+  final String? batchId;
 
-  const DeptDrawer({super.key, this.user});
+  const DeptDrawer(this.batchId,{super.key, this.user,});
 
   @override
   Widget build(BuildContext context) {
@@ -54,50 +58,59 @@ class DeptDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.space_dashboard),
-              title: const Text("Space"),
-              splashColor: Colors.grey[150],
-              onTap: () {
-                final currentRoute = ModalRoute.of(context)?.settings.name;
-
-                if (user?.userType == "Teacher") {
-                  if (currentRoute == "/hod_space") {
-                    Navigator.pop(context);
-                  } else {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HodSpacePage(user: user)),
-                          (route) => false,
-                    );
-                  }
-                } else if (user?.userType == "Student") {
-                  if (currentRoute == "/student_space") {
-                    Navigator.pop(context);
-                  } else {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => StudentSpacePage(user: user)),
-                          (route) => false,
-                    );
-                  }
-                }
-              },
-            ),
-
             if (user?.userType != "Student")
-              if(user?.role == "HOD")
+              ListTile(
+                leading: const Icon(Icons.space_dashboard),
+                title: const Text("Space"),
+                splashColor: Colors.grey[150],
+                onTap: () {
+                  final currentRoute = ModalRoute.of(context)?.settings.name;
+
+                  if (user?.userType == "Teacher") {
+                    if (currentRoute == "/hod_space") {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HodSpacePage(user: user)),
+                            (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+
+            if (user?.userType != "Student" && user?.role == "HOD")
               ListTile(
                 leading: const Icon(Icons.help),
                 title: const Text("Requests"),
                 onTap: () {},
               ),
-            if(user?.role != "HOD")
+
+            if (user?.role != "HOD")
               ListTile(
                 leading: const Icon(Icons.announcement),
-                title: const Text("announcements"),
-                onTap: () {},
+                title: const Text("Announcements"),
+                onTap: () {
+                  if (user?.userType == "Student") {
+                      Navigator.pop(context);
+                  }
+                  if(user?.userType == "Teacher")
+                    {
+                      context.read<FacultyMessageBloc>().facultySetBatchId(user);
+                      BlocProvider.of<FacultyMessageBloc>(context).add(FacultyLoadMessagesEvent( user: user));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommunicationAnnouncementStreamPage(
+                            user: user,
+                          ),
+                        ),
+                      );
+                    }
+                },
               ),
+
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Logout"),

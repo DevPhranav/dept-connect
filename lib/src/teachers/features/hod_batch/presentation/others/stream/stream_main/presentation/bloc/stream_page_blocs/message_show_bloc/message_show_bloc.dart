@@ -19,6 +19,7 @@ class MessageBloc extends Bloc<MessageEvent, MessagesState> {
 
   void setBatchId(String batchId,AuthUserModel? user) {
     this.batchId = batchId;
+
     _messageSubscription?.cancel(); // Cancel previous subscription
     _messageSubscription = messageUseCase.getMessageStream(batchId,user).listen((messages) {
       add(UpdateMessagesEvent(messages));

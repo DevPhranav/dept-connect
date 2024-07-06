@@ -8,40 +8,41 @@ class StudentMessageBloc extends Bloc<StudentMessageEvent, StudentMessagesState>
   final StudentMessageUseCase messageUseCase;
   StreamSubscription? _messageSubscription;
    String batchId='';
-  StudentMessageBloc({required this.messageUseCase}) : super(MessageInitialState()) {
-    on<LoadMessageInitialEvent>(_onInitial);
-    on<StudentLoadMessagesEvent>(_onLoadMessages);
-    on<UpdateMessagesEvent>(_onUpdateMessages);
+  StudentMessageBloc({required this.messageUseCase}) : super(StudentMessageInitialState()) {
+    on<StudentLoadMessageInitialEvent>(_studentOnInitial);
+    on<StudentLoadMessagesEvent>(_studentOnLoadMessages);
+    on<StudentUpdateMessagesEvent>(_studentOnUpdateMessages);
 
 
   }
 
-  void setBatchId(String batchId) {
+  void studentSetBatchId(String batchId) {
     this.batchId = batchId;
     _messageSubscription?.cancel(); // Cancel previous subscription
     _messageSubscription = messageUseCase.getMessageStream(batchId).listen((messages) {
-      add(UpdateMessagesEvent(messages));
+      add(StudentUpdateMessagesEvent(messages));
     });
   }
 
-  void _onInitial(LoadMessageInitialEvent event,emit)
+
+  void _studentOnInitial(StudentLoadMessageInitialEvent event,emit)
   {
      batchId= event.batchId;
   }
 
 
-  void _onLoadMessages(StudentLoadMessagesEvent event, Emitter<StudentMessagesState> emit) async {
-    emit(MessageLoadingState());
+  void _studentOnLoadMessages(StudentLoadMessagesEvent event, Emitter<StudentMessagesState> emit) async {
+    emit(StudentMessageLoadingState());
     try {
       final messages = await messageUseCase.loadMessages(event.batchId);
-      emit(MessageLoadedState(messages));
+      emit(StudentMessageLoadedState(messages));
     } catch (e) {
-      emit(MessageErrorState(e.toString()));
+      emit(StudentMessageErrorState(e.toString()));
     }
   }
 
-  void _onUpdateMessages(UpdateMessagesEvent event, Emitter<StudentMessagesState> emit) {
-    emit(MessageLoadedState(event.messages));
+  void _studentOnUpdateMessages(StudentUpdateMessagesEvent event, Emitter<StudentMessagesState> emit) {
+    emit(StudentMessageLoadedState(event.messages));
   }
 
   @override

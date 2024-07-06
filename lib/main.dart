@@ -24,6 +24,10 @@ import 'package:miniproject_authentication/src/students/student_stream/domain/us
 import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_file_download_bloc/file_download_bloc.dart';
 import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_message_details_page_main_bloc/message_details_page_bloc.dart';
 import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_message_show_bloc/message_show_bloc.dart';
+import 'package:miniproject_authentication/src/teachers/announcements/domain/usecases/faculty_message_use_case.dart';
+import 'package:miniproject_authentication/src/teachers/announcements/presentation/blocs/communication_announcement_blocs/faculty_message_show_bloc/faculty_message_bloc.dart';
+import 'package:miniproject_authentication/src/teachers/announcements/presentation/blocs/communication_announcement_details_full_screen_blocs/faculty_file_download_bloc/faculty_file_download_bloc.dart';
+import 'package:miniproject_authentication/src/teachers/announcements/presentation/blocs/communication_announcement_details_full_screen_blocs/faculty_message_details_page_main_bloc/faculty_message_details_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/data_source/batch_creation_data_source_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/data_source/drop_down_data_source_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/data/repositories/batch_repository_impl.dart';
@@ -223,6 +227,13 @@ class App extends StatelessWidget {
                   MessageUseCase(messageRepository: messageRepository),
             ),
           ),
+
+          BlocProvider(
+            create: (context) => FacultyMessageBloc(
+              messageUseCase:
+              FacultyMessageUseCase(messageRepository: messageRepository),
+            ),
+          ),
           BlocProvider(
             create: (context) => StudentMessageBloc(
               messageUseCase:
@@ -246,6 +257,8 @@ class App extends StatelessWidget {
               create: (context) => FileDownloadBloc()),
           BlocProvider<StudentFileDownloadBloc>(
               create: (context) => StudentFileDownloadBloc()),
+          BlocProvider<FacultyFileDownloadBloc>(
+              create: (context) => FacultyFileDownloadBloc()),
           BlocProvider<ToWhomOverlayCubit>(
               create: (context) => ToWhomOverlayCubit()),
           BlocProvider<AnnouncementBloc>(
@@ -276,6 +289,7 @@ class App extends StatelessWidget {
                       BatchYearCheckUseCase(batchRepository: batchRepository))),
 
           BlocProvider<MessageDetailsBloc>(create: (_) => MessageDetailsBloc()),
+          BlocProvider<FacultyMessageDetailsBloc>(create: (_) => FacultyMessageDetailsBloc()),
           BlocProvider<StudentMessageDetailsBloc>(create: (_) => StudentMessageDetailsBloc())
         ],
         child: MaterialApp(

@@ -5,42 +5,42 @@ abstract class StudentFileDownloadState extends Equatable {
   List<Object> get props => [];
 }
 
-class FileDownloadInitialState extends StudentFileDownloadState {}
+class StudentFileDownloadInitialState extends StudentFileDownloadState {}
 
-class FileDownloadingState extends StudentFileDownloadState {
+class StudentFileDownloadingState extends StudentFileDownloadState {
   final int currentIndex;
 
-  FileDownloadingState({required this.currentIndex});
+  StudentFileDownloadingState({required this.currentIndex});
 
   @override
   List<Object> get props => [currentIndex];
 }
 
-class FileDownloadCompletedState extends StudentFileDownloadState {
+class StudentFileDownloadCompletedState extends StudentFileDownloadState {
   final String filePath;
   final int completedIndex;
 
-  FileDownloadCompletedState(this.filePath, this.completedIndex);
+  StudentFileDownloadCompletedState(this.filePath, this.completedIndex);
 
   @override
   List<Object> get props => [filePath, completedIndex];
 }
 
-class FileDownloadFailureState extends StudentFileDownloadState {
+class StudentFileDownloadFailureState extends StudentFileDownloadState {
   final String errorMessage;
 
-  FileDownloadFailureState({required this.errorMessage});
+  StudentFileDownloadFailureState({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];
 }
 
-class FileExistenceCheckedState extends StudentFileDownloadState {
+class StudentFileExistenceCheckedState extends StudentFileDownloadState {
   final bool fileExists;
   final String filePath;
   final int index;
 
-  FileExistenceCheckedState({
+  StudentFileExistenceCheckedState({
     required this.fileExists,
     required this.filePath,
     required this.index,
@@ -50,10 +50,10 @@ class FileExistenceCheckedState extends StudentFileDownloadState {
   List<Object> get props => [fileExists, filePath, index];
 }
 
-class FileNotDownloadedState extends StudentFileDownloadState {
+class StudentFileNotDownloadedState extends StudentFileDownloadState {
   final int index;
 
-  FileNotDownloadedState({required this.index});
+  StudentFileNotDownloadedState({required this.index});
 
   @override
   List<Object> get props => [index];

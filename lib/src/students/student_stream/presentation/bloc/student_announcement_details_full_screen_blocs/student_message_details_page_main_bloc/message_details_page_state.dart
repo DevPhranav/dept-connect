@@ -22,4 +22,4 @@ class StudentMessageDetailsInitial extends StudentMessageDetailsState {
       required this.batchId});
 }
 
-class MessageEditingState extends StudentMessageDetailsState {}
+class StudentMessageEditingState extends StudentMessageDetailsState {}

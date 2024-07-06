@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:miniproject_authentication/src/authentication/auth/data/models/auth_user_model.dart';
 import 'package:miniproject_authentication/src/students/student_stream/presentation/screens/student_message_details_page.dart';
-import '../../../../../../../../../../static/calculate_year.dart';
 import '../../../../../../../../../../static/date_to_display_format.dart';
-import '../bloc/student_announcement_details_full_screen_blocs/student_message_details_page_main_bloc/message_details_page_bloc.dart';
-import '../bloc/student_announcement_details_full_screen_blocs/student_message_details_page_main_bloc/message_details_page_event.dart';
-import '../bloc/student_message_show_bloc/message_show_bloc.dart';
-import '../bloc/student_message_show_bloc/message_show_state.dart';
-import '../widgets/message_tile.dart';
-import '../widgets/stream_tile.dart';
+import '../../widgets/faculty_message_tile.dart';
+import '../blocs/communication_announcement_blocs/faculty_message_show_bloc/faculty_message_bloc.dart';
+import '../blocs/communication_announcement_blocs/faculty_message_show_bloc/faculty_message_state.dart';
+import '../blocs/communication_announcement_details_full_screen_blocs/faculty_message_details_page_main_bloc/faculty_message_details_bloc.dart';
+import '../blocs/communication_announcement_details_full_screen_blocs/faculty_message_details_page_main_bloc/faculty_message_details_event.dart';
+import 'communication_announcement_details_page.dart';
 
-class StudentBatchStreamPage extends StatelessWidget {
-  final String batchId;
+class CommunicationAnnouncementStreamPage extends StatelessWidget {
+  final AuthUserModel? user;
 
-  const StudentBatchStreamPage({super.key, required this.batchId});
+  const CommunicationAnnouncementStreamPage({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -22,36 +22,30 @@ class StudentBatchStreamPage extends StatelessWidget {
         title: const Text("Batch Stream"),
         centerTitle: true,
       ),
-      body: BlocBuilder<StudentMessageBloc, StudentMessagesState>(
+      body: BlocBuilder<FacultyMessageBloc, FacultyMessagesState>(
         builder: (context, state) {
-          if (state is StudentMessageLoadingState) {
+          if (state is FacultyMessageLoadingState) {
             return const Center(
               child: CircularProgressIndicator(color: Colors.black),
             );
           }
-          if (state is StudentMessageLoadedState) {
+          if (state is FacultyMessageLoadedState) {
             return CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: StudentStreamTile(
-                      title: batchId,
-                      subtitle: CalculateYear().getYearText(batchId)),
-                ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (context, index) {
                       final announcementMessage = state.messages[index];
-                      return StudentMessageTile(
+                      return FacultyMessageTile(
                         title: announcementMessage.title,
                         date: announcementMessage.timestamp,
                         editedDate: announcementMessage.editedTimestamp,
                         content: announcementMessage.content,
                         id: announcementMessage.id,
-                        batchId: batchId,
                         sender: announcementMessage.sender,
                         onTap: () {
-                          BlocProvider.of<StudentMessageDetailsBloc>(context).add(
-                            StudentMessageDetailsInitialEvent(
+                          BlocProvider.of<FacultyMessageDetailsBloc>(context).add(
+                            FacultyMessageDetailsInitialEvent(
                               id: announcementMessage.id,
                               title: announcementMessage.title,
                               content: announcementMessage.content,
@@ -62,15 +56,14 @@ class StudentBatchStreamPage extends StatelessWidget {
                                 announcementMessage.timestamp,
                                 announcementMessage.editedTimestamp,
                               ),
-                              batchId: batchId,
                             ),
                           );
 
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => StudentMessageDetailsPage(
-                                messageID: announcementMessage.id,
+                              builder: (context) => FacultyMessageDetailsPage(
+                                messageID: announcementMessage.id
                               ),
                             ),
                           );

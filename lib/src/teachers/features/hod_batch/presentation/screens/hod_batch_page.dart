@@ -23,7 +23,7 @@ class HodBatchPage extends StatelessWidget {
       appBar: AppBar(
         title:const Text(''),
       ),
-      drawer: DeptDrawer(user:user),
+      drawer: DeptDrawer(user:user,batchId),
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
           BlocProvider.of<MessageBloc>(context).add(LoadMessagesEvent(batchId: batchId,user:user));

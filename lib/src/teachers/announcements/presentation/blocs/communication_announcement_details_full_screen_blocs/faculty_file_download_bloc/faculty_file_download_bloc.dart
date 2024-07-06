@@ -3,28 +3,29 @@ import 'package:open_file/open_file.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:io';
 import '../../../../../../../static/file_download.dart';
-import 'file_download_event.dart';
-import 'file_download_state.dart';
 import 'package:path_provider/path_provider.dart';
 
-class StudentFileDownloadBloc extends Bloc<StudentFileDownloadEvent, StudentFileDownloadState> {
+import 'faculty_file_download_event.dart';
+import 'faculty_file_download_state.dart';
+
+class FacultyFileDownloadBloc extends Bloc<FacultyFileDownloadEvent, FacultyFileDownloadState> {
   final List<int> allReadyDownloadedFilesIndices = [];
 
-  StudentFileDownloadBloc() : super(StudentFileDownloadInitialState()) {
-    on<StudentStartDownloadEvent>(_startDownload);
-    on<StudentCheckFileExistenceEvent>(_checkFileExistence);
+  FacultyFileDownloadBloc() : super(FacultyFileDownloadInitialState()) {
+    on<FacultyStartDownloadEvent>(_startDownload);
+    on<FacultyCheckFileExistenceEvent>(_checkFileExistence);
   }
 
-  void _startDownload(StudentStartDownloadEvent event, Emitter<StudentFileDownloadState> emit) async {
+  void _startDownload(FacultyStartDownloadEvent event, Emitter<FacultyFileDownloadState> emit) async {
     if (allReadyDownloadedFilesIndices.contains(event.index)) {
       return; // If file is already downloaded, do nothing.
     }
 
-    emit(StudentFileDownloadingState(currentIndex: event.index));
+    emit(FacultyFileDownloadingState(currentIndex: event.index));
 
     try {
       final filePath = await downloadFile(event.url, event.fileName, event.id);
-      emit(StudentFileDownloadCompletedState(filePath, event.index));
+      emit(FacultyFileDownloadCompletedState(filePath, event.index));
 
       Fluttertoast.showToast(
         msg: "Download completed",
@@ -34,7 +35,7 @@ class StudentFileDownloadBloc extends Bloc<StudentFileDownloadEvent, StudentFile
       allReadyDownloadedFilesIndices.add(event.index);
       OpenFile.open(filePath);
     } catch (e) {
-      emit(StudentFileDownloadFailureState(errorMessage: "Unable to access external storage"));
+      emit(FacultyFileDownloadFailureState(errorMessage: "Unable to access external storage"));
       Fluttertoast.showToast(
         msg: "Download failed",
         toastLength: Toast.LENGTH_SHORT,
@@ -43,12 +44,12 @@ class StudentFileDownloadBloc extends Bloc<StudentFileDownloadEvent, StudentFile
     }
   }
 
-  void _checkFileExistence(StudentCheckFileExistenceEvent event, Emitter<StudentFileDownloadState> emit) async {
+  void _checkFileExistence(FacultyCheckFileExistenceEvent event, Emitter<FacultyFileDownloadState> emit) async {
     final directory = await getExternalStorageDirectory();
     final filePath = '${directory?.path}/${event.id}/${event.fileName}';
     final file = File(filePath);
     final fileExists = file.existsSync();
 
-    emit(StudentFileExistenceCheckedState(fileExists: fileExists, filePath: filePath, index: event.index));
+    emit(FacultyFileExistenceCheckedState(fileExists: fileExists, filePath: filePath, index: event.index));
   }
 }

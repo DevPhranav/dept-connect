@@ -23,7 +23,7 @@ class StudentSpacePageState extends State<StudentSpacePage> {
         title: const Text("Dept Connect"),
         centerTitle: true,
       ),
-      drawer: DeptDrawer(user:widget.user),
+      drawer: DeptDrawer(user:widget.user,""),
       body: CustomScrollView(
         slivers: [
           SliverList(
@@ -32,6 +32,7 @@ class StudentSpacePageState extends State<StudentSpacePage> {
                 return StudentBatchTile(
                   title: widget.user?.batchId ?? 'No Batch ID',
                   onTap: () {
+                    context.read<StudentMessageBloc>().studentSetBatchId(widget.user?.batchId ?? "");
                     BlocProvider.of<StudentMessageBloc>(context).add(StudentLoadMessagesEvent(batchId: widget.user?.batchId));
                     Navigator.push(
                       context,
