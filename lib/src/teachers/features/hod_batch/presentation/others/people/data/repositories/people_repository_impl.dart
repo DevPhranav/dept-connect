@@ -36,7 +36,7 @@ class PeopleRepositoryImpl implements PeopleRepository {
             id: teacherId,
             name: facultyDoc.get('name'),
             email: facultyDoc.get('email'),
-            phoneNumber: facultyDoc.get('phoneNumber'),
+            phoneNumber: facultyDoc.get('ph_no'),
             role: facultyDoc.get('role'),
           );
           teachers.add(teacher);
@@ -75,13 +75,14 @@ class PeopleRepositoryImpl implements PeopleRepository {
             id: tutorId,
             name: facultyDoc.get('name'),
             email: facultyDoc.get('email'),
-            phoneNumber: facultyDoc.get('phoneNumber'),
+            phoneNumber: facultyDoc.get('ph_no'),
             role: facultyDoc.get('role'),
           );
           tutors.add(tutor);
         }
       }
 
+      print(tutors);
       return tutors;
     } catch (e) {
       // Handle errors here
@@ -93,7 +94,7 @@ class PeopleRepositoryImpl implements PeopleRepository {
   @override
   Future<List<Student>> getStudents(String batchId, String section) async {
     final QuerySnapshot snapshot = await firestore
-        .collection('departments/CSE/batches/$batchId/semester/student')
+        .collection('departments/CSE/batches/$batchId/students')
         .where('section', isEqualTo: section)
         .get();
     return snapshot.docs

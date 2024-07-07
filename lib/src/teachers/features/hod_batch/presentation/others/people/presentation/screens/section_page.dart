@@ -29,18 +29,12 @@ class SectionPage extends StatelessWidget {
           } else if (state is PeopleLoaded) {
             return ListView(
               children: [
-                ListTile(
-                  title: Text('Tutors'),
-                ),
-                ...state.tutor.map((tutor) => ListTile(title: Text(tutor.name))),
-                ListTile(
-                  title: Text('Teachers'),
-                ),
-                ...state.teacher.map((teacher) => ListTile(title: Text(teacher.name))),
-                ListTile(
-                  title: Text('Students'),
-                ),
-                ...state.students.map((student) => ListTile(title: Text(student.name))),
+                _buildSectionHeader('Tutors', Icons.school),
+                ...state.tutor.asMap().entries.map((entry) => _buildListItem(entry.key + 1, entry.value.name)),
+                _buildSectionHeader('Teachers', Icons.person),
+                ...state.teacher.asMap().entries.map((entry) => _buildListItem(entry.key + 1, entry.value.name)),
+                _buildSectionHeader('Students', Icons.group),
+                ...state.students.asMap().entries.map((entry) => _buildListItem(entry.key + 1, entry.value.name)),
               ],
             );
           } else if (state is PeopleError) {
@@ -50,6 +44,32 @@ class SectionPage extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData iconData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading: Icon(iconData),
+          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        _buildSectionDivider(),
+      ],
+    );
+  }
+
+  Widget _buildListItem(int index, String name) {
+    return ListTile(
+      title: Text('$index. $name'),
+    );
+  }
+
+  Widget _buildSectionDivider() {
+    return Container(
+      child: Divider(),
+      padding: EdgeInsets.all(10),
     );
   }
 }

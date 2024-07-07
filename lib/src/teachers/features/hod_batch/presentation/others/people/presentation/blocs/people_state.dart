@@ -23,8 +23,7 @@ class PeopleLoaded extends PeopleState {
   PeopleLoaded({required this.tutor, required this.teacher, required this.students});
 
 
-  @override
-  List<Object> get props => [teacher, students];
+
 }
 
 class PeopleError extends PeopleState {
