@@ -56,7 +56,7 @@ class FacultyMessageTile extends StatelessWidget {
                               sender,
                               // Change this to your date formatting logic
                               style: const TextStyle(
-                                color:Colors.grey,
+                                color:Colors.black,
                                 fontSize: 18,
                               ),
                             ),

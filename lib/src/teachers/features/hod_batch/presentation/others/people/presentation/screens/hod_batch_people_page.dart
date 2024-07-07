@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/presentation/screens/section_page.dart';
 
 import '../../widgets/section_tile.dart';
-
 
 class HodBatchPeoplePage extends StatelessWidget {
   final String batchId;
@@ -9,20 +9,33 @@ class HodBatchPeoplePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SectionTile(
-          title: "Sec - 1",
-          onTap: () {
-            Navigator.pushNamed(context, "/hod_batch_people_section");
-          },
-        ),
-        SectionTile(
+    return Scaffold(
+      body: Column(
+        children: [
+          SectionTile(
+            title: "Sec - 1",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SectionPage(batchId: batchId, section: "1"),
+                ),
+              );
+            },
+          ),
+          SectionTile(
             title: "Sec - 2",
             onTap: () {
-              Navigator.pushNamed(context, "/hod_batch_people_section");
-            }),
-      ],
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SectionPage(batchId: batchId, section: "2"),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

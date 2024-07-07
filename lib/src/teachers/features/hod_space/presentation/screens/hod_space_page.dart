@@ -26,7 +26,10 @@ class HodSpacePageState extends State<HodSpacePage> {
   void initState() {
     super.initState();
     // Dispatch the event to load batches
-    context.read<HodBatchBloc>().add(HodBatchLoadRequestedEvent(widget.user!.department ?? "CSE",widget.user!.facultyId??"",widget.user!.role??"HOD"));
+    context.read<HodBatchBloc>().add(HodBatchLoadRequestedEvent(
+        widget.user!.department ?? "CSE",
+        widget.user!.facultyId ?? "",
+        widget.user!.role ?? "HOD"));
   }
 
   @override
@@ -36,12 +39,12 @@ class HodSpacePageState extends State<HodSpacePage> {
         title: const Text("Space"),
         centerTitle: true,
       ),
-      drawer: DeptDrawer(user:widget.user,""),
+      drawer: DeptDrawer(user: widget.user, batchId: widget.user?.batchId,),
       body: BlocBuilder<HodBatchBloc, HodBatchState>(
         builder: (context, state) {
           if (state is HodBatchLoading) {
             return const Center(
-              child: CircularProgressIndicator(color:Colors.black),
+              child: CircularProgressIndicator(color: Colors.black),
             );
           } else if (state is HodBatchLoaded) {
             return CustomScrollView(
@@ -56,7 +59,9 @@ class HodSpacePageState extends State<HodSpacePage> {
                           final batchId = state.batchIds[index];
                           print(batchId);
                           // Handle the tap event for batch tile
-                          context.read<MessageBloc>().setBatchId(batchId,widget.user);
+                          context
+                              .read<MessageBloc>()
+                              .setBatchId(batchId, widget.user);
                           Navigator.pushNamed(
                             context,
                             "/hod_batch_page",
@@ -84,18 +89,74 @@ class HodSpacePageState extends State<HodSpacePage> {
           }
         },
       ),
-      floatingActionButton: widget.user!.role == 'HOD' ? FloatingActionButton(
-        onPressed: () {
-          BlocProvider.of<BatchYearBloc>(context).add(BatchYearInitialEvent());
-          BlocProvider.of<DropdownBloc>(context).add(DropDownInitialEvent());
-          BlocProvider.of<BatchCreationFilePickerBloc>(context).add(FilePickInitialEvent());
-          Navigator.pushNamed(context, "/hod_batch_creation_page");
+      floatingActionButton: widget.user!.role == 'HOD'
+          ? PopupMenuButton<String>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 'createBatch',
+            child: ListTile(
+              leading: const Icon(Icons.create),
+              title: const Text('Create Batch'),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'addFaculty',
+            child: ListTile(
+              leading: const Icon(Icons.person_add),
+              title: const Text('Add Faculty'),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'addStudent',
+            child: ListTile(
+              leading: const Icon(Icons.person_add_alt_1),
+              title: const Text('Add Student'),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'addCourses',
+            child: ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text('Add Courses'),
+            ),
+          ),
+        ],
+        onSelected: (value) {
+          switch (value) {
+            case 'createBatch':
+              BlocProvider.of<BatchYearBloc>(context)
+                  .add(BatchYearInitialEvent());
+              BlocProvider.of<DropdownBloc>(context)
+                  .add(DropDownInitialEvent());
+              BlocProvider.of<BatchCreationFilePickerBloc>(context)
+                  .add(FilePickInitialEvent());
+              Navigator.pushNamed(
+                  context, "/hod_batch_creation_page");
+              break;
+            case 'addFaculty':
+            // Handle add faculty
+              break;
+            case 'addStudent':
+            // Handle add student
+              break;
+            case 'addCourses':
+            // Handle add courses
+              break;
+          }
         },
-        backgroundColor: Colors.grey[50],
-        elevation: 3,
-        child: const Icon(Icons.add),
-      ) : null,
 
+        icon: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300], // Background color for the circle
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0), // Adjust padding as needed
+            child: Icon(Icons.add, color: Colors.black,size:40),
+          ),
+        ),
+      )
+          : null,
     );
   }
 }

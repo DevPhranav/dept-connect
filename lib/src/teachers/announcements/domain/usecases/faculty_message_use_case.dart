@@ -39,6 +39,7 @@ class FacultyMessageUseCase {
               .collection('batches')
               .doc(batchId)
               .collection('batchesMessages')
+              .where('toWhom', arrayContains: 'seniorTutor')
               .get();
 
           final seniorTutorMessages = snapshot.docs.map((doc) {
@@ -50,24 +51,19 @@ class FacultyMessageUseCase {
             final dynamic timestamp = data['timestamp'];
             final dynamic editedTimestamp = data['editedDate'];
 
-            // Only include messages where toWhom contains 'seniorTutor'
-            if (toWhom.contains('seniorTutor')) {
-              return FacultyAnnouncementMessage(
-                id: data['id'] ?? '',
-                title: data['title'] ?? '',
-                content: data['content'] ?? '',
-                sender: data['sender'] ?? '',
-                toWhom: toWhom,
-                fileInfo: fileInfo,
-                timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
-                editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
-              );
-            } else {
-              return null; // Exclude messages not meant for senior tutors
-            }
-          }).where((msg) => msg != null).toList(); // Filter out null messages
+            return FacultyAnnouncementMessage(
+              id: data['id'] ?? '',
+              title: data['title'] ?? '',
+              content: data['content'] ?? '',
+              sender: data['sender'] ?? '',
+              toWhom: toWhom,
+              fileInfo: fileInfo,
+              timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
+              editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
+            );
+          }).toList();
 
-          allMessages.addAll(seniorTutorMessages.cast<FacultyAnnouncementMessage>()); // Cast to non-nullable type
+          allMessages.addAll(seniorTutorMessages);
         }
 
         // Fetch semester documents
@@ -83,9 +79,8 @@ class FacultyMessageUseCase {
           final semesterData = semesterDoc.data();
           List<FacultyAnnouncementMessage> semesterMessages = [];
 
-          // Check if facultyId is in teachers_sec1 or teachers_sec2
+          // Check if facultyId is in teachers_sec1
           if (semesterData['teachers_sec1'] != null && (semesterData['teachers_sec1'] as List<dynamic>).contains(facultyId)) {
-            // Fetch messages for teachers_sec1
             final snapshot = await FirebaseFirestore.instance
                 .collection('departments')
                 .doc('CSE')
@@ -114,9 +109,11 @@ class FacultyMessageUseCase {
                 timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
                 editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
               );
-            }).toList();
-          } else if (semesterData['teachers_sec2'] != null && (semesterData['teachers_sec2'] as List<dynamic>).contains(facultyId)) {
-            // Fetch messages for teachers_sec2
+            }).where((msg) => !allMessages.any((m) => m.id == msg.id)).toList(); // Filter out duplicate messages
+          }
+
+          // Check if facultyId is in teachers_sec2
+          if (semesterData['teachers_sec2'] != null && (semesterData['teachers_sec2'] as List<dynamic>).contains(facultyId)) {
             final snapshot = await FirebaseFirestore.instance
                 .collection('departments')
                 .doc('CSE')
@@ -126,7 +123,7 @@ class FacultyMessageUseCase {
                 .where('toWhom', arrayContains: 'tSec2')
                 .get();
 
-            semesterMessages = snapshot.docs.map((doc) {
+            final messages = snapshot.docs.map((doc) {
               final data = doc.data();
               final List<dynamic> toWhom = data['toWhom'] ?? [];
               final List<Map<String, dynamic>> fileInfo = data['fileInfo'] != null
@@ -145,7 +142,9 @@ class FacultyMessageUseCase {
                 timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
                 editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
               );
-            }).toList();
+            }).where((msg) => !allMessages.any((m) => m.id == msg.id)).toList(); // Filter out duplicate messages
+
+            semesterMessages.addAll(messages);
           }
 
           allMessages.addAll(semesterMessages);
@@ -160,6 +159,7 @@ class FacultyMessageUseCase {
       throw Exception('Failed to load messages: $e');
     }
   }
+
   Stream<List<FacultyAnnouncementMessage>> getMessageStream(String facultyId) {
     return FirebaseFirestore.instance
         .collection('departments')
@@ -251,7 +251,7 @@ class FacultyMessageUseCase {
                 timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
                 editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
               );
-            }).toList();
+            }).where((msg) => !allMessages.any((m) => m.id == msg.id)).toList(); // Filter out duplicate messages
           }
 
           // Check if facultyId is in teachers_sec2
@@ -284,7 +284,7 @@ class FacultyMessageUseCase {
                 timestamp: timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now(),
                 editedTimestamp: editedTimestamp != null ? (editedTimestamp as Timestamp).toDate() : DateTime.now(),
               );
-            }).toList();
+            }).where((msg) => !allMessages.any((m) => m.id == msg.id)).toList(); // Filter out duplicate messages
 
             semesterMessages.addAll(messages);
           }

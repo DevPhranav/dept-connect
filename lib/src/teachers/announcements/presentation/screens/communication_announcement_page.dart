@@ -19,7 +19,7 @@ class CommunicationAnnouncementStreamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Batch Stream"),
+        title: const Text("Announcements"),
         centerTitle: true,
       ),
       body: BlocBuilder<FacultyMessageBloc, FacultyMessagesState>(

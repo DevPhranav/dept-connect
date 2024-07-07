@@ -19,6 +19,10 @@ import 'package:miniproject_authentication/src/authentication/auth/presentation/
 import 'package:miniproject_authentication/src/authentication/auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import 'package:miniproject_authentication/src/authentication/auth/presentation/screens/sign_in_screen.dart';
 import 'package:miniproject_authentication/src/authentication/auth/presentation/screens/splash_screen.dart';
+import 'package:miniproject_authentication/src/parents/parent_stream/domain/usecases/parent_message_usecase.dart';
+import 'package:miniproject_authentication/src/parents/parent_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_file_download_bloc/file_download_bloc.dart';
+import 'package:miniproject_authentication/src/parents/parent_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_message_details_page_main_bloc/message_details_page_bloc.dart';
+import 'package:miniproject_authentication/src/parents/parent_stream/presentation/bloc/student_message_show_bloc/message_show_bloc.dart';
 import 'package:miniproject_authentication/src/students/home_page/presentation/screens/student_space_page.dart';
 import 'package:miniproject_authentication/src/students/student_stream/domain/usecases/student_message_usecase.dart';
 import 'package:miniproject_authentication/src/students/student_stream/presentation/bloc/student_announcement_details_full_screen_blocs/student_file_download_bloc/file_download_bloc.dart';
@@ -48,13 +52,24 @@ import 'package:miniproject_authentication/src/teachers/features/batch_creation/
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/presentation/bloc/file_pick_bloc/file_pick_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/batch_creation/presentation/screens/batch_creation_page.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/bloc/navigation/hod_navigation_bloc.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/data/data_sources/course_firebase_datasource.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/data/data_sources/semester_datasource.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/data/data_sources/semester_datasource_impl.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/data/repositories/course_repository_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/data/repositories/semester_repository_impl.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/domain/repositories/course_repository.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/domain/repositories/semester_repository.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/domain/usecases/get_courses_usecase.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/domain/usecases/get_semester_use_case.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/presentation/bloc/course_bloc/course_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/presentation/bloc/semester_course_bloc/semester_course_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/course/presentation/pages/hod_batch_course_per_details_page.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/data/repositories/people_repository_impl.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/domain/repositories/people_repository.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/domain/usecases/get_teachers.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/domain/usecases/get_tutors.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/domain/usecases/get_students.dart';
+import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/people/presentation/blocs/people_bloc.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/stream/stream_announcement/data/datasource/firestore_data_source_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/stream/stream_announcement/data/repositories/send_update_message_repo_impl.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_batch/presentation/others/stream/stream_announcement/domain/repositories/FirestoreDataSource.dart';
@@ -84,7 +99,6 @@ import 'package:miniproject_authentication/src/teachers/features/hod_space/prese
 import 'package:miniproject_authentication/src/teachers/features/hod_space/presentation/screens/hod_space_page.dart';
 import 'package:miniproject_authentication/src/teachers/features/hod_space/presentation/screens/navigation_page.dart';
 import 'firebase_options.dart';
-
 
 typedef AppBuilder = Future<Widget> Function();
 
@@ -148,6 +162,13 @@ void main() {
       SemesterRepository semesterRepository =
           SemesterRepositoryImpl(dataSource: semesterDataSource);
 
+      CourseFirebaseDataSource courseFirebaseDataSource =
+          CourseFirebaseDataSource();
+      CourseRepository courseRepository =
+          CourseRepositoryImpl(courseFirebaseDataSource);
+
+      PeopleRepository peopleRepository = PeopleRepositoryImpl();
+
       // Check if user data exists in SecureStorage
       final userData = await secureStorageRepository.getUserData();
       print(userData);
@@ -166,6 +187,8 @@ void main() {
         dropdownRepository: dropdownRepository,
         batchRepository: batchRepository,
         semesterRepository: semesterRepository,
+        courseRepository: courseRepository,
+        peopleRepository: peopleRepository,
       );
     },
   );
@@ -184,6 +207,8 @@ class App extends StatelessWidget {
     required this.dropdownRepository,
     required this.batchRepository,
     required this.semesterRepository,
+    required this.courseRepository,
+    required this.peopleRepository,
   }) : super(key: key);
 
   final AuthRepository authRepository;
@@ -196,6 +221,8 @@ class App extends StatelessWidget {
   final DropdownRepository dropdownRepository;
   final BatchRepository batchRepository;
   final SemesterRepository semesterRepository;
+  final CourseRepository courseRepository;
+  final PeopleRepository peopleRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +233,15 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => SemesterBloc(getSemestersUseCase: GetSemestersUseCase(semesterRepository))),
+          BlocProvider(
+              create: (context) => CourseBloc(
+                  getCoursesWithFacultyDetailsUseCase:
+                      GetCoursesWithFacultyDetailsUseCase(
+                          repository: courseRepository))),
+          BlocProvider(
+              create: (context) => SemesterBloc(
+                  getSemestersUseCase:
+                      GetSemestersUseCase(semesterRepository))),
           BlocProvider(create: (context) => ConnectivityBloc()),
           BlocProvider<SignInBloc>(
             create: (context) => SignInBloc(
@@ -227,17 +262,20 @@ class App extends StatelessWidget {
                   MessageUseCase(messageRepository: messageRepository),
             ),
           ),
-
           BlocProvider(
             create: (context) => FacultyMessageBloc(
               messageUseCase:
-              FacultyMessageUseCase(messageRepository: messageRepository),
+                  FacultyMessageUseCase(messageRepository: messageRepository),
             ),
           ),
           BlocProvider(
             create: (context) => StudentMessageBloc(
-              messageUseCase:
-              StudentMessageUseCase(),
+              messageUseCase: StudentMessageUseCase(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ParentMessageBloc(
+              messageUseCase: ParentMessageUseCase(),
             ),
           ),
           BlocProvider<MessageRemoveBloc>(
@@ -257,6 +295,8 @@ class App extends StatelessWidget {
               create: (context) => FileDownloadBloc()),
           BlocProvider<StudentFileDownloadBloc>(
               create: (context) => StudentFileDownloadBloc()),
+          BlocProvider<ParentFileDownloadBloc>(
+              create: (context) => ParentFileDownloadBloc()),
           BlocProvider<FacultyFileDownloadBloc>(
               create: (context) => FacultyFileDownloadBloc()),
           BlocProvider<ToWhomOverlayCubit>(
@@ -287,10 +327,20 @@ class App extends StatelessWidget {
                       PushBatchDataUseCase(batchRepository: batchRepository),
                   batchYearCheckUseCase:
                       BatchYearCheckUseCase(batchRepository: batchRepository))),
-
           BlocProvider<MessageDetailsBloc>(create: (_) => MessageDetailsBloc()),
-          BlocProvider<FacultyMessageDetailsBloc>(create: (_) => FacultyMessageDetailsBloc()),
-          BlocProvider<StudentMessageDetailsBloc>(create: (_) => StudentMessageDetailsBloc())
+          BlocProvider<FacultyMessageDetailsBloc>(
+              create: (_) => FacultyMessageDetailsBloc()),
+          BlocProvider<StudentMessageDetailsBloc>(
+              create: (_) => StudentMessageDetailsBloc()),
+          BlocProvider<ParentMessageDetailsBloc>(
+              create: (_) => ParentMessageDetailsBloc()),
+          BlocProvider<PeopleBloc>(
+            create: (_) => PeopleBloc(
+              getTutors: GetTutors(repository: peopleRepository),
+              getTeachers: GetTeachers(repository: peopleRepository),
+              getStudents: GetStudents(repository: peopleRepository),
+            ),
+          )
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -300,14 +350,9 @@ class App extends StatelessWidget {
           routes: {
             '/login': (context) => const SignInView(),
             '/hod_space': (context) => HodSpacePage(user: user),
-            '/student_space':(context)=> StudentSpacePage(user: user),
+            '/student_space': (context) => StudentSpacePage(user: user),
             '/home': (context) => NavigationScreen(user: user),
             '/hod_batch_creation_page': (context) => const BatchCreationPage(),
-
-            '/hod_batch_course_details_page': (context) =>
-                const HodBatchCourseDetailsPage(
-                  batchId: '',
-                ),
           },
           onGenerateRoute: (settings) {
             if (settings.name == '/hod_batch_page') {

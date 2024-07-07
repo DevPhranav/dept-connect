@@ -53,7 +53,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         print(authUser.batchId);
 
           AuthUserModel authModel=AuthUserModel(email: '');
-        if (authUser.userType == "Student") {
+        if (authUser.userType == "Student" || authUser.userType == "Parent") {
            authModel = AuthUserModel(
             deviceId: authUser.deviceId,
             email: authUser.email,

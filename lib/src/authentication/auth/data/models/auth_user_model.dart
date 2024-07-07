@@ -127,6 +127,26 @@ class AuthUserModel extends Equatable {
     );
   }
 
+  // Factory method to create AuthUserModel from Firebase data for parents
+  factory AuthUserModel.fromParentFirebaseAuthUser(
+      firebase_auth.User user, Map<String, dynamic> studentData) {
+    return AuthUserModel(
+      email: user.email!,
+      name: studentData['parentName'], // Assuming parent's name is stored in studentData
+      deviceId: user.uid,
+      phoneNumber: studentData['parentPhoneNumber'],
+      parentEmail: user.email!,
+      parentName: studentData['parentName'],
+      parentPhoneNumber: studentData['parentPhoneNumber'],
+      batchId: studentData['batchId'],
+      rollNo: studentData['roll_no'],
+      section: studentData['section'],
+      userType: 'Parent',
+      department: 'CSE', // Assuming department is 'CSE'
+    );
+  }
+
+
 
 
   AuthUser toEntity() {

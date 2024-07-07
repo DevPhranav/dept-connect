@@ -23,7 +23,7 @@ class StudentSpacePageState extends State<StudentSpacePage> {
         title: const Text("Dept Connect"),
         centerTitle: true,
       ),
-      drawer: DeptDrawer(user:widget.user,""),
+      drawer: DeptDrawer(user:widget.user,batchId: widget.user?.batchId,),
       body: CustomScrollView(
         slivers: [
           SliverList(

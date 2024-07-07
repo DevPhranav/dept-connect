@@ -15,7 +15,9 @@ class DeptDrawer extends StatelessWidget {
   final AuthUserModel? user;
   final String? batchId;
 
-  const DeptDrawer(this.batchId,{super.key, this.user,});
+  const DeptDrawer({super.key, required this.user, required this.batchId});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class DeptDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            if (user?.userType != "Student")
+            if (user?.userType == "Teacher")
               ListTile(
                 leading: const Icon(Icons.space_dashboard),
                 title: const Text("Space"),
@@ -92,7 +94,7 @@ class DeptDrawer extends StatelessWidget {
                 leading: const Icon(Icons.announcement),
                 title: const Text("Announcements"),
                 onTap: () {
-                  if (user?.userType == "Student") {
+                  if (user?.userType == "Student" || user?.userType == "Parent") {
                       Navigator.pop(context);
                   }
                   if(user?.userType == "Teacher")

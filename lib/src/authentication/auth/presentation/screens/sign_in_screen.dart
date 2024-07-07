@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../static/loading_indicator.dart';
 import '../../../../../../static/user_button.dart';
+import '../../../../parents/parent_stream/presentation/screens/parent_batch_stream_page.dart';
 import '../../../../students/home_page/presentation/screens/student_space_page.dart';
 import '../../../../teachers/features/hod_space/presentation/screens/hod_space_page.dart';
 import '../blocs/sign_in/sign_in_bloc.dart';
@@ -66,6 +67,12 @@ class _SignInViewState extends State<SignInView> {
                   {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => StudentSpacePage(user: state.user),
+                    ));
+                  }
+                else if(state.user.userType == "Parent")
+                  {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ParentBatchStreamPage(batchId: state.user.batchId?? "",user: state.user),
                     ));
                   }
                 else{

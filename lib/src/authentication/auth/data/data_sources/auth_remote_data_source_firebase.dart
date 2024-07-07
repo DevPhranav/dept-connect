@@ -43,7 +43,7 @@ class AuthRemoteDataSourceFirebase implements AuthRemoteDataSource {
         // First, check if the user exists in Firebase Authentication
         String email = credential.user!.email!;
         String emailKey = email.split("@")[0];
-        String batchId = emailKey.substring(4, 6); // Assuming the batch ID is at positions 2 and 3 in the emailKey
+        String batchId = emailKey.substring(4, 6); // Assuming the batch ID is at positions 4 and 5 in the emailKey
         String studentDocumentPath = 'departments/CSE/batches/20$batchId-20${int.parse(batchId) + 4}/students/$emailKey';
         userData = await _getStudentData(studentDocumentPath);
         String batchName = "20$batchId-20${int.parse(batchId) + 4}";
@@ -52,11 +52,40 @@ class AuthRemoteDataSourceFirebase implements AuthRemoteDataSource {
           userData,
           batchName,
         );
+      } else if (userType == "Parent") {
+        // Retrieve student data based on parent email
+        userData = await _getStudentDataForParent(email);
+        return AuthUserModel.fromParentFirebaseAuthUser(
+          credential.user!,
+          userData,
+        );
       } else {
         throw Exception('Unsupported user type: $userType');
       }
     }
   }
+
+  Future<Map<String, dynamic>> _getStudentDataForParent(String parentEmail) async {
+    final firestore = FirebaseFirestore.instance;
+    final batchesCollection = firestore.collection('departments/CSE/batches');
+
+    // Get the list of batches
+    final batches = await batchesCollection.get();
+
+    for (var batch in batches.docs) {
+      final studentsCollection = batch.reference.collection('students');
+      final students = await studentsCollection.where('parentEmail', isEqualTo: parentEmail).get();
+
+      if (students.docs.isNotEmpty) {
+        var studentData = students.docs.first.data();
+        studentData['batchId'] = batch.id;  // Add the batchId to the student data
+        return studentData;
+      }
+    }
+
+    throw Exception('Parent email does not match any student records.');
+  }
+
 
   Future<Map<String, dynamic>> _getStudentData(String studentDocumentPath) async {
     try {

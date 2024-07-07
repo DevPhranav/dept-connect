@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/usecases/get_courses_usecase.dart';
+import '../bloc/course_bloc/course_bloc.dart';
 import '../bloc/semester_course_bloc/semester_course_bloc.dart';
 import '../bloc/semester_course_bloc/semester_course_event.dart';
 import '../bloc/semester_course_bloc/semester_course_state.dart';
@@ -27,6 +29,8 @@ class SemesterListView extends StatelessWidget {
                 key: Key('semester_tile_$index'),
                 title: semester.title,
                 onTap: () {
+                  String semesterNo=(index+1).toString();
+                  context.read<CourseBloc>().add(LoadCourses(batchId,semesterNo));
                   Navigator.push(
                     context,
                     MaterialPageRoute(
