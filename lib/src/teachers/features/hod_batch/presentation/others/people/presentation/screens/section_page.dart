@@ -25,7 +25,7 @@ class SectionPage extends StatelessWidget {
       body: BlocBuilder<PeopleBloc, PeopleState>(
         builder: (context, state) {
           if (state is PeopleLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (state is PeopleLoaded) {
             return ListView(
               children: [
